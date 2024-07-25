@@ -1,0 +1,64 @@
+{
+    "categories": [
+        {
+            "id": 1,
+            "value": "All",
+            "varieties": [
+                {
+                    "variety": "variety1",
+                    "products": [
+                        {
+                            "plant_name": "Tomato Plant",
+                            "price": "10.00",
+                            "discount_price": "8.00",
+                            "variety": "variety1",
+                            "category": "tomato",
+                            "image": "https://example.com/images/tomato_plant.jpg",
+                            "stock": "50",
+                            "age": [
+                                "1 month",
+                                "2 months"
+                            ],
+                            "description": "Fresh and juicy tomato plant.",
+                            "height": [
+                                "30cm",
+                                "60cm"
+                            ],
+                            "spray": "Occasional watering",
+                            "availability": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "value": "tomato",
+            "varieties": [
+                {
+                    "variety": "variety1",
+                    "products": [
+                        {
+                            "plant_name": "Cherry Tomato",
+                            "price": "12.00",
+                            "discount_price": "10.00",
+                            "variety": "variety1",
+                            "category": "tomato",
+                            "image": "https://example.com/images/cherry_tomato.jpg",
+                            "stock": "30",
+                            "age": [
+                                "1 month"
+                            ],
+                            "description": "Sweet cherry tomatoes.",
+                            "height": [
+                                "40cm"
+                            ],
+                            "spray": "Daily watering",
+                            "availability": true
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

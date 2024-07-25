@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "602149926420",
+    "project_id": "hi-tech-nursery",
+    "storage_bucket": "hi-tech-nursery.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:602149926420:android:4df28392e1d0b550479901",
+        "android_client_info": {
+          "package_name": "com.example.online_plants_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyARq5ZnlCzVsItTlgm6tvFrZe85t3k6rzo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
