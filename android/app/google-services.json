@@ -12,7 +12,12 @@
           "package_name": "com.example.online_plants_app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "602149926420-g38431hd6noe7lf1dche1olugf43ev75.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyARq5ZnlCzVsItTlgm6tvFrZe85t3k6rzo"
@@ -20,7 +25,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "602149926420-g38431hd6noe7lf1dche1olugf43ev75.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

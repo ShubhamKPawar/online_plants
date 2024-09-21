@@ -23,46 +23,50 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   // void _onScroll() {}
   Widget welcomeSliverAppBar() {
     return SliverAppBar(
-      flexibleSpace: const FlexibleSpaceBar(
+      backgroundColor: AppColor.skWhite,
+      flexibleSpace: FlexibleSpaceBar(
         expandedTitleScale: 1,
-        title: Row(
-          children: [
-            CircleAvatar(
-              minRadius: 25,
-              maxRadius: 25,
-              backgroundImage: AssetImage(AppImages.kGoreshwarLogo),
-            ),
-            Padding(
-              padding: EdgeInsets.only(left: 8.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Welcome to',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontFamily: fontFamilyCustom,
-                      fontWeight: FontWeight.bold,
-                      color: AppColor.skGrey,
-                    ),
-                  ),
-                  Text(
-                    'Goreshwar Hi-Tech Nursery',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontFamily: fontFamilyCustom,
-                      color: AppColor.skGrey,
-                    ),
-                  ),
-                ],
+        title: Container(
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(3)),
+          child: const Row(
+            children: [
+              CircleAvatar(
+                minRadius: 25,
+                maxRadius: 25,
+                backgroundImage: AssetImage(AppImages.kGoreshwarLogo),
               ),
-            ),
-          ],
+              Padding(
+                padding: EdgeInsets.only(left: 8.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Welcome to',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontFamily: fontFamilyCustom,
+                        fontWeight: FontWeight.bold,
+                        color: AppColor.skGrey,
+                      ),
+                    ),
+                    Text(
+                      'Goreshwar Hi-Tech Nursery',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontFamily: fontFamilyCustom,
+                        color: AppColor.skGrey,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
-        titlePadding: EdgeInsets.only(left: 16.0, bottom: 0.0, top: 2),
+        titlePadding: const EdgeInsets.only(left: 16.0, bottom: 0.0, top: 2),
         centerTitle: false,
       ),
       actions: [
@@ -79,22 +83,34 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
   Widget searchSliverAppBar() {
     return SliverAppBar(
+      backgroundColor: AppColor.skWhite,
       floating: true,
       pinned: true,
-      flexibleSpace: Center(
-        child: Padding(
-          padding: const EdgeInsets.only(left: 16.0, right: 50),
-          child: SizedBox(height: 40, child: searchField()),
+      flexibleSpace: Container(
+        decoration: const BoxDecoration(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(5), bottomLeft: Radius.circular(5))),
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.only(left: 16.0, right: 50),
+            child: SizedBox(height: 40, child: searchField()),
+          ),
         ),
       ),
       actions: [
-        IconButton(
-          icon: const Icon(
-            Icons.grid_view_rounded,
-            color: AppColor.skGreen,
-            size: 40,
+        Container(
+          decoration: const BoxDecoration(
+              borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(5),
+                  bottomRight: Radius.circular(5))),
+          child: GestureDetector(
+            child: const Icon(
+              Icons.grid_view_rounded,
+              color: AppColor.skGreen,
+              size: 40,
+            ),
+            onTap: () {},
           ),
-          onPressed: () {},
         ),
       ],
     );

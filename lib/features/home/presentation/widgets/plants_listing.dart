@@ -3,7 +3,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:online_plants_app/core/constants/app_images.dart';
 import 'package:online_plants_app/core/constants/constant.dart';
+import 'package:online_plants_app/core/navigation/routes.dart';
 import 'package:online_plants_app/core/utils/app_color.dart';
+import 'package:online_plants_app/features/login/presentation/pages/login_page.dart';
 
 class PlantsListing extends StatefulWidget {
   final int index;
@@ -25,35 +27,40 @@ class _PlantsListingState extends State<PlantsListing> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  const Icon(Icons.grid_view_rounded),
-                  Text(
-                    widget.title,
-                    style: const TextStyle(
-                        fontSize: 16,
-                        fontFamily: fontFamilyCustom,
-                        fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
-              InkWell(
-                onTap: () {},
-                child: const Padding(
-                  padding: EdgeInsets.all(5),
-                  child: Text(
-                    'see all',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 14, color: AppColor.skGrey),
-                  ),
+        Container(
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(5)),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    const Icon(Icons.grid_view_rounded),
+                    Text(
+                      widget.title,
+                      style: const TextStyle(
+                          fontSize: 16,
+                          fontFamily: fontFamilyCustom,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ],
                 ),
-              )
-            ],
+                GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).pushNamed(AppRoutes.loginRoute);
+                  },
+                  child: const Padding(
+                    padding: EdgeInsets.all(5),
+                    child: Text(
+                      'see all',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 14, color: AppColor.skGrey),
+                    ),
+                  ),
+                )
+              ],
+            ),
           ),
         ),
         SizedBox(

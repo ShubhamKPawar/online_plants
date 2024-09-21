@@ -72,7 +72,6 @@ class _CartState extends State<Cart> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    _cartCubit = context.read<CartCubit>();
     return SafeArea(
       child: Scaffold(
         body: NestedScrollView(
@@ -80,6 +79,7 @@ class _CartState extends State<Cart> with SingleTickerProviderStateMixin {
           headerSliverBuilder: (context, innerBoxIsScrolled) {
             return <Widget>[
               const SliverAppBar(
+                backgroundColor: AppColor.skWhite,
                 flexibleSpace: FlexibleSpaceBar(
                   centerTitle: true,
                   title: Text(
