@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:online_plants_app/core/constants/app_images.dart';
 import 'package:online_plants_app/core/constants/constant.dart';
@@ -40,24 +41,19 @@ class _SplashScreenState extends State<SplashScreen> {
 
     // Navigate to Dashboard after 3 seconds
     Timer(const Duration(seconds: 3), () {
-      print("FIREBASE: ${FirebaseAuth.instance.currentUser}");
-      print("HIVE: ${hiveInstance?.getIsLogging()}");
-      print(
-          '${(hiveInstance?.getIsLogging() ?? false) || (hiveInstance?.getIsGuest() ?? false)}');
-      if ((hiveInstance?.getIsLogging() ?? false) ||
-          (hiveInstance?.getIsGuest() ?? false)) {
-        Navigator.pushNamedAndRemoveUntil(
-          context,
-          AppRoutes.dashboardRoute,
-          (route) => false,
-        );
-      } else {
-        Navigator.pushNamedAndRemoveUntil(
-          context,
-          AppRoutes.loginRoute,
-          (route) => false,
-        );
+      if (kDebugMode) {
+        print("FIREBASE: ${FirebaseAuth.instance.currentUser}");
+
+        print("HIVE: ${hiveInstance?.getIsLoggin()}");
+        print(
+            '${(hiveInstance?.getIsLoggin() ?? false) || (hiveInstance?.getIsGuest() ?? false)}');
       }
+
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        AppRoutes.dashboardRoute,
+        (route) => false,
+      );
     });
   }
 

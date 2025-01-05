@@ -1,5 +1,7 @@
 // Define the ThemeBloc class
 
+// ignore_for_file: override_on_non_overriding_member
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:online_plants_app/core/theme/bloc/theme_event.dart';
 import 'package:online_plants_app/core/theme/bloc/theme_state.dart';

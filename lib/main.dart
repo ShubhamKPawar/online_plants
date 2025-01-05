@@ -10,15 +10,14 @@ import 'package:online_plants_app/core/firestore/firebase_option.dart';
 import 'package:online_plants_app/core/hive_data/hive_pref.dart';
 import 'package:online_plants_app/core/navigation/routes.dart';
 import 'package:online_plants_app/core/theme/bloc/theme_bloc.dart';
-import 'package:online_plants_app/core/theme/theme_data/theme_dark.dart';
-import 'package:online_plants_app/core/theme/theme_data/theme_light.dart';
-import 'package:online_plants_app/core/utils/app_color.dart';
+import 'package:online_plants_app/core/theme/theme_data/text_theme.dart';
+import 'package:online_plants_app/core/theme/theme_data/theme.dart';
 import 'package:online_plants_app/di/init_di.dart';
 import 'package:online_plants_app/features/cart/presentation/bloc/cart_bloc.dart';
 import 'package:online_plants_app/features/cart/presentation/bloc/cart_cubit.dart';
 import 'package:online_plants_app/features/dashboard_setup/presentation/bloc/bottom_navigation_bloc.dart';
-import 'package:online_plants_app/features/login/presentation/bloc/Login_bloc.dart';
-import 'package:online_plants_app/features/login/presentation/bloc/Login_cubit.dart';
+import 'package:online_plants_app/features/login/presentation/bloc/login_bloc.dart';
+import 'package:online_plants_app/features/login/presentation/bloc/login_cubit.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,8 +34,14 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    final brightness = View.of(context).platformDispatcher.platformBrightness;
+
     WIDTH = MediaQuery.of(context).size.width;
     HEIGHT = MediaQuery.of(context).size.height;
+    ISLANDSCAPE = MediaQuery.of(context).orientation == Orientation.landscape;
+    TextTheme textTheme = createTextTheme(brightness == Brightness.light);
+
+    MaterialTheme theme = MaterialTheme(textTheme);
     return MultiBlocProvider(
       providers: [
         BlocProvider(
@@ -57,15 +62,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Goreshwar Hi-Tech Nursery',
         navigatorKey: NavigationService.navigationKey,
-        // onGenerateRoute: AppRoutes.generateRoute,
-        // initialRoute: AppRoutes.dashboardRoute,
-        theme: isDark
-            ? ThemeDark.instance.theme!.copyWith(
-                scaffoldBackgroundColor: AppColor.skWhite,
-              )
-            : ThemeLight.instance.theme!.copyWith(
-                scaffoldBackgroundColor: AppColor.skWhite,
-              ),
+        theme: brightness == Brightness.light ? theme.light() : theme.dark(),
         initialRoute: AppRoutes.splashRoute,
         onGenerateRoute: AppRoutes.generateRoute,
       ),

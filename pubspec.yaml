@@ -37,7 +37,7 @@ dependencies:
   cupertino_icons: ^1.0.6
   flutter_bloc: ^8.1.6
   bloc: ^8.1.4
-  get_it: ^7.7.0
+  get_it: ^8.0.0
   equatable: ^2.0.5
   no_context_navigation: ^3.0.0
   animated_notch_bottom_bar: ^1.0.3
@@ -55,6 +55,8 @@ dependencies:
   cached_network_image: ^3.4.1
   google_sign_in: ^6.2.1
   sign_in_with_apple: ^6.1.2
+  flutter_staggered_grid_view: ^0.7.0
+  lottie: ^3.2.0
 
 dev_dependencies:
   flutter_test:
@@ -65,7 +67,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^3.0.0
+  flutter_lints: ^5.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -80,10 +82,11 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - android/app/build.gradle
+    # - android/app/build.gradle
     - assets/images/
     - assets/temp_json/
     - assets/icons/
+    - assets/lottie/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
@@ -97,13 +100,15 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
-  #   - family: Trajan Pro
+  fonts:
+    - family: Poppins
+      fonts:
+        - asset: assets\fonts\Poppins-Regular.ttf
+          weight: 900
+    - family: Barlow
+      fonts:
+        - asset: assets\fonts\Barlow-Regular.ttf
+        - asset: assets\fonts\Barlow-SemiBold.ttf
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf
   #       - asset: fonts/TrajanPro_Bold.ttf

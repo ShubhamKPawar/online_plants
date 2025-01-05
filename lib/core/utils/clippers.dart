@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:online_plants_app/core/constants/constant.dart';
+import 'package:online_plants_app/core/utils/size.dart';
 
 class WaveClipper extends CustomClipper<Path> {
   @override
@@ -7,13 +7,13 @@ class WaveClipper extends CustomClipper<Path> {
     var path = Path();
     path.lineTo(0, size.height);
     var firstStart = Offset(size.width / 5, size.height);
-    var firstEnd = Offset(size.width / 2.25, size.height - HEIGHT * 0.0560538);
+    var firstEnd = Offset(size.width / 2.25, size.height - getHeight(45.01));
     path.quadraticBezierTo(
         firstStart.dx, firstStart.dy, firstEnd.dx, firstEnd.dy);
 
     var secondStart = Offset(
-        size.width - (size.width / 3.24), size.height - HEIGHT * 0.117713);
-    var secondEnd = Offset(size.width, size.height - HEIGHT * 0.01121076);
+        size.width - (size.width / 3.24), size.height - getHeight(94.523539));
+    var secondEnd = Offset(size.width, size.height - getHeight(9.0022));
     path.quadraticBezierTo(
         secondStart.dx, secondStart.dy, secondEnd.dx, secondEnd.dy);
     path.lineTo(size.width, 0);
@@ -33,13 +33,13 @@ class TopWaveClipper extends CustomClipper<Path> {
     Path path = Path();
 
 // Start at the top-left corner
-    path.moveTo(0, HEIGHT * 0.090);
+    path.moveTo(0, getHeight(72.27));
 
 // First wave curves downward
-    var firstStart =
-        Offset(size.width / 5, HEIGHT * 0.088); // Adjusted control point below
+    var firstStart = Offset(
+        size.width / 5, getHeight(70.664)); // Adjusted control point below
     var firstEnd =
-        Offset(size.width / 2.25, HEIGHT * 0.034); // End point at the top
+        Offset(size.width / 2.25, getHeight(27.302)); // End point at the top
     path.quadraticBezierTo(
       firstStart.dx,
       firstStart.dy,
@@ -48,8 +48,9 @@ class TopWaveClipper extends CustomClipper<Path> {
     );
 
 // Second wave curves upward
-    var secondStart = Offset(size.width - (size.width / 3.34), -HEIGHT * 0.027);
-    var secondEnd = Offset(size.width, HEIGHT * 0.078);
+    var secondStart =
+        Offset(size.width - (size.width / 3.34), -getHeight(21.681));
+    var secondEnd = Offset(size.width, getHeight(62.634));
     path.quadraticBezierTo(
       secondStart.dx,
       secondStart.dy,

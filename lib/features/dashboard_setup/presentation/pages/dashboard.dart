@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:online_plants_app/core/constants/constant.dart';
 import 'package:online_plants_app/core/utils/app_color.dart';
+import 'package:online_plants_app/core/utils/size.dart';
 import 'package:online_plants_app/features/dashboard_setup/presentation/bloc/bottom_navigation_bloc.dart';
 import 'package:online_plants_app/features/dashboard_setup/presentation/bloc/bottom_navigation_event.dart';
 import 'package:online_plants_app/features/dashboard_setup/presentation/bloc/bottom_navigation_state.dart';
@@ -42,9 +43,6 @@ class _DashboardState extends State<Dashboard> {
       child: Scaffold(
         bottomNavigationBar: Stack(children: [
           ClipRRect(
-            borderRadius: const BorderRadius.only(
-                bottomLeft: Radius.circular(0.0),
-                bottomRight: Radius.circular(0.0)),
             child: BlocConsumer<BottomNavigationBloc, BottomNavigationState>(
               listener: (context, state) {
                 if (state is BottomNavigationTabState) {
@@ -76,14 +74,15 @@ class _DashboardState extends State<Dashboard> {
               textOverflow: TextOverflow.visible,
               maxLine: 1,
               shadowElevation: 8,
-              kBottomRadius: 24.0,
+              kBottomRadius: getHeight(24),
               notchColor: AppColor.skGreen,
               removeMargins: false,
               bottomBarWidth: MediaQuery.of(context).size.width,
               showShadow: true,
               durationInMilliSeconds: 300,
-              itemLabelStyle:
-                  const TextStyle(fontSize: 12, fontFamily: fontFamilyCustom),
+              itemLabelStyle: TextStyle(
+                fontSize: getHeight(12),
+              ),
               elevation: 2,
               bottomBarItems: const [
                 BottomBarItem(
@@ -146,7 +145,7 @@ class _DashboardState extends State<Dashboard> {
                 _controller.index = index;
                 bloc.add(BottomNavigationTabChanged(index));
               },
-              kIconSize: 15.0,
+              kIconSize: getHeight(15),
             ),
           ),
         ]),

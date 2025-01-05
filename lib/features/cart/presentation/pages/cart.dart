@@ -1,10 +1,8 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:online_plants_app/core/constants/constant.dart';
 import 'package:online_plants_app/core/utils/app_color.dart';
+import 'package:online_plants_app/core/utils/size.dart';
 import 'package:online_plants_app/features/cart/presentation/bloc/cart_cubit.dart';
 import 'package:online_plants_app/features/cart/presentation/bloc/cart_cubit_bloc.dart';
 import 'package:online_plants_app/features/cart/presentation/widgets/my_cart.dart';
@@ -21,7 +19,7 @@ class _CartState extends State<Cart> with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<Offset> _offsetAnimation;
   Timer? _timer;
-  int length = 5; // Changed to a value greater than 3 for testing
+  int length = 2; // Changed to a value greater than 3 for testing
   late CartCubit _cartCubit;
   void _startTimer() {
     _timer?.cancel();
@@ -51,9 +49,8 @@ class _CartState extends State<Cart> with SingleTickerProviderStateMixin {
       curve: Curves.easeInOut,
     ));
     _scrollController.addListener(() {
-      if (_scrollController.position.userScrollDirection !=
-              ScrollDirection.idle &&
-          length > 3) {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
         _startTimer();
       }
     });
@@ -79,7 +76,7 @@ class _CartState extends State<Cart> with SingleTickerProviderStateMixin {
           headerSliverBuilder: (context, innerBoxIsScrolled) {
             return <Widget>[
               const SliverAppBar(
-                backgroundColor: AppColor.skWhite,
+                // backgroundColor: AppColor.skWhite,
                 flexibleSpace: FlexibleSpaceBar(
                   centerTitle: true,
                   title: Text(
@@ -87,7 +84,6 @@ class _CartState extends State<Cart> with SingleTickerProviderStateMixin {
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 22,
-                      fontFamily: fontFamilyCustom,
                       fontWeight: FontWeight.bold,
                       color: AppColor.skGrey,
                     ),
@@ -99,16 +95,11 @@ class _CartState extends State<Cart> with SingleTickerProviderStateMixin {
           body: Column(
             children: [
               Expanded(
-                child: ListView.separated(
+                child: ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index) {
                     return MyCartItems(index: index);
-                  },
-                  separatorBuilder: (context, index) {
-                    return const SizedBox(
-                      height: 10,
-                    );
                   },
                   itemCount: length,
                 ),
@@ -117,48 +108,50 @@ class _CartState extends State<Cart> with SingleTickerProviderStateMixin {
                 return bloc.showContainer
                     ? SlideTransition(
                         position: _offsetAnimation,
-                        child: ClipRRect(
-                          borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(30),
-                            topRight: Radius.circular(30),
+                        child: Container(
+                          height: getHeight(130),
+                          width: MediaQuery.of(context).size.width,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(getHeight(30)),
+                              topRight: Radius.circular(getHeight(30)),
+                            ),
                           ),
-                          child: Container(
-                            height: 170,
-                            width: MediaQuery.of(context).size.width,
-                            decoration: const BoxDecoration(
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(30),
-                                topRight: Radius.circular(30),
-                              ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(getHeight(30)),
+                              topRight: Radius.circular(getHeight(30)),
                             ),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Container(
-                                  decoration: const BoxDecoration(
+                                  decoration: BoxDecoration(
                                     color: AppColor.skGrey200,
                                     borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(30),
-                                      topRight: Radius.circular(30),
+                                      topLeft: Radius.circular(getHeight(30)),
+                                      topRight: Radius.circular(getHeight(30)),
                                     ),
                                   ),
                                   child: Column(
                                     children: [
                                       Container(
-                                        height: 55,
+                                        height: getHeight(40),
                                         width:
                                             MediaQuery.of(context).size.width,
-                                        decoration: const BoxDecoration(
+                                        decoration: BoxDecoration(
                                           borderRadius: BorderRadius.only(
-                                            topLeft: Radius.circular(30),
-                                            topRight: Radius.circular(30),
+                                            topLeft:
+                                                Radius.circular(getHeight(30)),
+                                            topRight:
+                                                Radius.circular(getHeight(30)),
                                           ),
                                           color: AppColor.skGrey200,
                                         ),
-                                        child: const Padding(
+                                        child: Padding(
                                           padding: EdgeInsets.symmetric(
-                                              horizontal: 30),
-                                          child: Row(
+                                              horizontal: getHeight(30)),
+                                          child: const Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
@@ -167,58 +160,80 @@ class _CartState extends State<Cart> with SingleTickerProviderStateMixin {
                                                 style: TextStyle(
                                                   color: AppColor.skGrey,
                                                   fontWeight: FontWeight.bold,
-                                                  fontFamily: fontFamilyCustom,
-                                                  fontSize: 16,
+                                                  fontSize: 13,
                                                 ),
                                               ),
-                                              Text(
-                                                '\$30.00',
-                                                style: TextStyle(
-                                                  color: AppColor.skGrey,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontFamily: fontFamilyCustom,
-                                                  fontSize: 16,
-                                                ),
+                                              Text.rich(
+                                                TextSpan(
+                                                    text: '\u{20B9} ',
+                                                    style: TextStyle(
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                            FontWeight.w400),
+                                                    children: [
+                                                      TextSpan(
+                                                        text: '20/-',
+                                                        style: TextStyle(
+                                                            fontSize: 18,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w600),
+                                                      )
+                                                    ]),
+                                                maxLines: 2,
+                                                overflow: TextOverflow.ellipsis,
                                               ),
                                             ],
                                           ),
                                         ),
                                       ),
                                       Container(
-                                        height: 55,
+                                        height: getHeight(40),
                                         width:
                                             MediaQuery.of(context).size.width,
-                                        decoration: const BoxDecoration(
+                                        decoration: BoxDecoration(
                                           borderRadius: BorderRadius.only(
-                                            topLeft: Radius.circular(30),
-                                            topRight: Radius.circular(30),
+                                            topLeft:
+                                                Radius.circular(getHeight(30)),
+                                            topRight:
+                                                Radius.circular(getHeight(30)),
                                           ),
                                           color: AppColor.skGrey100,
                                         ),
-                                        child: const Padding(
+                                        child: Padding(
                                           padding: EdgeInsets.symmetric(
-                                              horizontal: 30),
-                                          child: Row(
+                                              horizontal: getHeight(30)),
+                                          child: const Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
                                               Text(
-                                                'Total',
+                                                'Final Total',
                                                 style: TextStyle(
-                                                  color: AppColor.skBlack,
+                                                  color: AppColor.skGrey,
                                                   fontWeight: FontWeight.bold,
-                                                  fontFamily: fontFamilyCustom,
-                                                  fontSize: 16,
+                                                  fontSize: 13,
                                                 ),
                                               ),
-                                              Text(
-                                                '\$30.00',
-                                                style: TextStyle(
-                                                  color: AppColor.skBlack,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontFamily: fontFamilyCustom,
-                                                  fontSize: 16,
-                                                ),
+                                              Text.rich(
+                                                TextSpan(
+                                                    text: '\u{20B9} ',
+                                                    style: TextStyle(
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                            FontWeight.w400),
+                                                    children: [
+                                                      TextSpan(
+                                                        text: '20/-',
+                                                        style: TextStyle(
+                                                            fontSize: 18,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w600),
+                                                      )
+                                                    ]),
+                                                maxLines: 2,
+                                                overflow: TextOverflow.ellipsis,
                                               ),
                                             ],
                                           ),
@@ -228,21 +243,21 @@ class _CartState extends State<Cart> with SingleTickerProviderStateMixin {
                                   ),
                                 ),
                                 SizedBox(
-                                  height: 50,
-                                  width: 200,
+                                  height: getHeight(45),
+                                  width: getWidth(180),
                                   child: TextButton(
                                     style: TextButton.styleFrom(
                                       backgroundColor: AppColor.skBlack,
                                       shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10),
+                                        borderRadius: BorderRadius.circular(
+                                            getHeight(10)),
                                       ),
                                     ),
                                     onPressed: () {},
                                     child: const Text(
                                       'Buy Now',
                                       style: TextStyle(
-                                        fontFamily: fontFamilyCustom,
-                                        fontSize: 16,
+                                        fontSize: 15,
                                         fontWeight: FontWeight.bold,
                                         color: AppColor.skWhite,
                                       ),
@@ -256,8 +271,8 @@ class _CartState extends State<Cart> with SingleTickerProviderStateMixin {
                       )
                     : const SizedBox.shrink();
               }),
-              const SizedBox(
-                height: 90,
+              SizedBox(
+                height: getHeight(90),
               ),
             ],
           ),

@@ -8,27 +8,682 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:online_plants_app/core/constants/app_images.dart';
 import 'package:online_plants_app/core/constants/constant.dart';
+import 'package:online_plants_app/core/constants/lottie.dart';
 import 'package:online_plants_app/core/navigation/routes.dart';
 import 'package:online_plants_app/core/utils/app_color.dart';
 import 'package:online_plants_app/core/utils/clippers.dart';
 import 'package:online_plants_app/core/utils/form_field.dart';
+import 'package:online_plants_app/core/utils/size.dart';
 import 'package:online_plants_app/core/utils/util_data.dart';
 import 'package:online_plants_app/core/utils/validation.dart';
-import 'package:online_plants_app/features/login/presentation/bloc/Login_bloc.dart';
-import 'package:online_plants_app/features/login/presentation/bloc/Login_cubit.dart';
-import 'package:online_plants_app/features/login/presentation/bloc/Login_cubit_bloc.dart';
-import 'package:online_plants_app/features/login/presentation/bloc/Login_event.dart';
-import 'package:online_plants_app/features/login/presentation/bloc/Login_state.dart';
-import 'package:online_plants_app/features/login/presentation/widgets/sign_in._help.dart';
+import 'package:online_plants_app/features/login/presentation/bloc/login_bloc.dart';
+import 'package:online_plants_app/features/login/presentation/bloc/login_cubit.dart';
+import 'package:online_plants_app/features/login/presentation/bloc/login_cubit_bloc.dart';
+import 'package:online_plants_app/features/login/presentation/bloc/login_event.dart';
+import 'package:online_plants_app/features/login/presentation/bloc/login_state.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _LoginPageState createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Scaffold(
+          appBar: null,
+          // backgroundColor: Colors.white,
+          body: Stack(
+            children: [
+              // Top Container with PageView
+              LoginUpperWidget(),
+
+              // Bottom Sheet that can be dragged up and down
+              LoginWidget(),
+            ],
+          )),
+    );
+  }
+}
+
+class LoginWidget extends StatefulWidget {
+  const LoginWidget({super.key});
+
+  @override
+  State<LoginWidget> createState() => _LoginWidgetState();
+}
+
+class _LoginWidgetState extends State<LoginWidget> {
+  GlobalKey<FormState> key = GlobalKey<FormState>();
+  bool _loading = false;
+  bool isSignUp = false;
+
+  //login controller
+  TextEditingController userNameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passController = TextEditingController();
+
+  bool _passVisible = false;
+
+  int imageLength = 0;
+
+  late LoginBloc _loginBloc;
+
+  @override
+  void initState() {
+    super.initState();
+    _loginBloc = context.read<LoginBloc>();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var bottomInset = MediaQuery.of(context).viewInsets.bottom;
+    return DraggableScrollableSheet(
+      initialChildSize: 0.788,
+      minChildSize: 0.788,
+      maxChildSize: bottomInset > 0 ? 0.9 : 0.795,
+      builder: (context, scrollController) {
+        return Stack(
+          alignment: AlignmentDirectional.topCenter,
+          children: [
+            ClipPath(
+              clipper: TopWaveClipper(),
+              child: Container(
+                padding: EdgeInsets.only(top: getHeight(60)),
+                alignment: Alignment.center,
+                decoration: const BoxDecoration(
+                    // color: AppColor.skWhite,
+                    ),
+                child: ListView(
+                  controller: scrollController,
+                  children: [
+                    !isSignUp
+                        ? const Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisSize: MainAxisSize.max,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                'WELCOME BACK',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w600, fontSize: 18),
+                              ),
+                              Text(
+                                'Login to your Account',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w500, fontSize: 12),
+                              ),
+                            ],
+                          )
+                        : const Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisSize: MainAxisSize.max,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                'REGISTER',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w600, fontSize: 18),
+                              ),
+                              Text(
+                                'Create your new account',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w500, fontSize: 12),
+                              ),
+                            ],
+                          ),
+
+                    SizedBox(
+                      height: getHeight(30),
+                    ),
+
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisSize: MainAxisSize.max,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Form(
+                          key: key,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisSize: MainAxisSize.max,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              if (isSignUp)
+                                SizedBox(
+                                  width: getWidth(280),
+                                  child: TextFormField(
+                                    controller: userNameController,
+                                    cursorColor: AppColor.skGreenColor,
+                                    cursorErrorColor: AppColor.skGreenColor,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                    textAlign: TextAlign.start,
+                                    keyboardType: TextInputType.emailAddress,
+                                    validator: (value) =>
+                                        usernameValidator(value),
+                                    decoration: formFieldDecoration(
+                                      hinText: 'Enter full name',
+                                      prefixIcon: Icon(
+                                        Icons.email,
+                                        size: getHeight(25),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              if (isSignUp)
+                                SizedBox(
+                                  height: getHeight(10),
+                                ),
+                              SizedBox(
+                                width: getWidth(280),
+                                child: TextFormField(
+                                  controller: emailController,
+                                  cursorColor: AppColor.skGreenColor,
+                                  cursorErrorColor: AppColor.skGreenColor,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                  textAlign: TextAlign.start,
+                                  keyboardType: TextInputType.emailAddress,
+                                  validator: (value) => emailValidator(value),
+                                  decoration: formFieldDecoration(
+                                    hinText: 'Enter your email',
+                                    prefixIcon: Icon(
+                                      Icons.email,
+                                      size: getHeight(25),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                height: getHeight(10),
+                              ),
+                              SizedBox(
+                                width: getWidth(280),
+                                child: StatefulBuilder(
+                                    builder: (context, setState) {
+                                  return TextFormField(
+                                    controller: passController,
+                                    cursorColor: AppColor.skGreenColor,
+                                    cursorErrorColor: AppColor.skGreenColor,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                    textAlign: TextAlign.start,
+                                    keyboardType: TextInputType.visiblePassword,
+                                    validator: (value) =>
+                                        passwordValidator(value),
+                                    obscureText: _passVisible,
+                                    obscuringCharacter: '*',
+                                    decoration: formFieldDecoration(
+                                      hinText: 'Password',
+                                      prefixIcon: Icon(
+                                        Icons.lock,
+                                        size: getHeight(25),
+                                      ),
+                                      suffixIcon: GestureDetector(
+                                        onTap: () => setState(
+                                            () => _passVisible = !_passVisible),
+                                        child: Icon(
+                                          _passVisible
+                                              ? Icons.visibility_off
+                                              : Icons.visibility,
+                                          size: getHeight(25),
+                                          color: AppColor.skGreenColor,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                }),
+                              ),
+                              SizedBox(
+                                height: getHeight(10),
+                              ),
+                              if (!isSignUp)
+                                SizedBox(
+                                  width: getWidth(280),
+                                  child: const Align(
+                                    alignment: AlignmentDirectional.centerEnd,
+                                    child: Text(
+                                      'Forgot password?',
+                                      style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                  ),
+                                ),
+                              if (!isSignUp)
+                                SizedBox(
+                                  height: getHeight(10),
+                                ),
+                              BlocConsumer<LoginBloc, LoginState>(
+                                  listener: (context, state) {
+                                if (state is LoadingState) {
+                                  _loading = true;
+                                }
+                                if (state is LoginUserState) {
+                                  _loading = false;
+                                  UserCredential? userCredential =
+                                      state.userCredential;
+                                  USER_CREDENTIAL = userCredential;
+                                  if (mounted) {
+                                    showSnackbar(context, "Logged In Success",
+                                        Colors.green);
+                                  }
+                                  if (mounted) {
+                                    pushToDashboard(context);
+                                  }
+                                }
+                                if (state is RegisterUserState) {
+                                  _loading = false;
+                                  UserCredential? userCredential =
+                                      state.userCredential;
+                                  USER_CREDENTIAL = userCredential;
+                                  if (mounted) {
+                                    showSnackbar(context, "Registered Success",
+                                        Colors.green);
+                                  }
+                                  if (mounted) {
+                                    pushToDashboard(context);
+                                  }
+                                }
+                                if (state is GoogleLoginState) {
+                                  _loading = false;
+                                  UserCredential? userCredential =
+                                      state.userCredential;
+                                  USER_CREDENTIAL = userCredential;
+                                  if (mounted) {
+                                    showSnackbar(context, "Logged In Success",
+                                        Colors.green);
+                                  }
+                                  if (mounted) {
+                                    pushToDashboard(context);
+                                  }
+                                }
+                                if (state is AppleLoginState) {
+                                  _loading = false;
+                                  UserCredential? userCredential =
+                                      state.userCredential;
+                                  USER_CREDENTIAL = userCredential;
+                                  if (mounted) {
+                                    showSnackbar(context, "Logged In Success",
+                                        Colors.green);
+                                  }
+                                  if (mounted) {
+                                    pushToDashboard(context);
+                                  }
+                                }
+                                if (state is LoginFailureState) {
+                                  _loading = false;
+                                  if (mounted) {
+                                    showSnackbar(context,
+                                        state.message.toString(), Colors.red);
+                                  }
+                                }
+                                if (state is FailureLoginState) {
+                                  _loading = false;
+                                }
+                              }, builder: (context, state) {
+                                return Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        fixedSize: Size(
+                                          getWidth(160),
+                                          getHeight(45),
+                                        ),
+                                      ),
+                                      onPressed: () async {
+                                        if (state is LoginLoadingState) {
+                                        } else {
+                                          if (key.currentState!.validate()) {
+                                            if (!isSignUp) {
+                                              try {
+                                                _loginBloc.add(
+                                                  UserLoginEvent(
+                                                    email: emailController.text
+                                                        .toString()
+                                                        .trim(),
+                                                    password: passController
+                                                        .text
+                                                        .toString()
+                                                        .trim(),
+                                                  ),
+                                                );
+                                              } catch (e) {
+                                                if (mounted) {
+                                                  showSnackbar(context,
+                                                      e.toString(), Colors.red);
+                                                }
+                                              }
+                                            } else {
+                                              try {
+                                                _loginBloc.add(
+                                                  UserRegisterEvent(
+                                                    email: emailController.text
+                                                        .toString()
+                                                        .trim(),
+                                                    password: passController
+                                                        .text
+                                                        .toString()
+                                                        .trim(),
+                                                    userName: userNameController
+                                                        .text
+                                                        .toString()
+                                                        .trim(),
+                                                  ),
+                                                );
+                                              } on FirebaseException catch (e) {
+                                                if (mounted) {
+                                                  showSnackbar(context,
+                                                      e.toString(), Colors.red);
+                                                }
+                                              } catch (e) {
+                                                if (mounted) {
+                                                  showSnackbar(context,
+                                                      e.toString(), Colors.red);
+                                                }
+                                              }
+                                            }
+                                          }
+                                        }
+                                      },
+                                      child: Center(
+                                        child: state is LoginLoadingState
+                                            ? InAppLoaderWidget()
+                                            : Text(
+                                                !isSignUp ? 'Login' : 'Sign Up',
+                                                style: const TextStyle(
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              }),
+                              SizedBox(
+                                height: getHeight(10),
+                              ),
+                              LeafOneAnimation(
+                                height: getHeight(30),
+                                width: getWidth(80),
+                                fit: BoxFit.fitWidth,
+                              ),
+                              SizedBox(
+                                height: getHeight(20),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Container(
+                                height: 0.5,
+                                width: getWidth(120),
+                                decoration: const BoxDecoration(
+                                    color: AppColor.skBlack),
+                              ),
+                              const Text(
+                                ' Or Continue With ',
+                                style: TextStyle(fontSize: 12),
+                              ),
+                              Container(
+                                height: 0.5,
+                                width: getWidth(120),
+                                decoration: const BoxDecoration(
+                                    color: AppColor.skBlack),
+                              ),
+                            ]),
+                        SizedBox(
+                          height: getHeight(10),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            GestureDetector(
+                              onTap: () async {
+                                try {
+                                  _loginBloc.add(GoogleSignInEvent());
+                                } catch (e) {
+                                  if (mounted) {
+                                    showSnackbar(
+                                        context, e.toString(), Colors.red);
+                                  }
+                                }
+                              },
+                              child: Container(
+                                width: getHeight(35),
+                                height: getHeight(35),
+                                decoration: const BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  image: DecorationImage(
+                                    image: AssetImage(AppImages.btnGoogle),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            if (Platform.isIOS) ...[
+                              SizedBox(
+                                width: getWidth(40),
+                              ),
+                              GestureDetector(
+                                onTap: () async {
+                                  try {
+                                    _loginBloc.add(AppleSignInEvent());
+                                  } catch (e) {
+                                    if (mounted) {
+                                      showSnackbar(
+                                          context, e.toString(), Colors.red);
+                                    }
+                                  }
+                                },
+                                child: Container(
+                                  width: getHeight(35),
+                                  height: getHeight(35),
+                                  decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    image: DecorationImage(
+                                      image: AssetImage(AppImages.btnApple),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ]
+                          ],
+                        ),
+                        SizedBox(
+                          height: getHeight(10),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              isSignUp = !isSignUp;
+                              userNameController.clear();
+                              emailController.clear();
+                              passController.clear();
+                            });
+                          },
+                          child: Text.rich(
+                            TextSpan(
+                                text: !isSignUp
+                                    ? 'Don\'t have account  '
+                                    : 'Already have an account?  ',
+                                style: const TextStyle(),
+                                children: [
+                                  TextSpan(
+                                      text: !isSignUp ? 'Sign In' : 'Login',
+                                      style: const TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w600,
+                                      ))
+                                ]),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: getHeight(30),
+                    ),
+
+                    //SKIP
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            if (!(hiveInstance?.getIsLoggin() ?? false)) {
+                              hiveInstance?.setIsGuest(true);
+                            }
+                            Navigator.pushNamedAndRemoveUntil(
+                              context,
+                              AppRoutes.dashboardRoute,
+                              (route) => false,
+                            );
+                          },
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              const Text(
+                                'SKIP',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              Icon(
+                                Icons.navigate_next_sharp,
+                                size: getHeight(35),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            //Current Page Dot Viewer
+            Padding(
+              padding: EdgeInsets.only(top: getHeight(5.0)),
+              child: BlocConsumer<LoginBloc, LoginState>(
+                listener: (context, state) {
+                  if (state is LoginImageListState) {
+                    imageLength = state.imagesList.length;
+                    _loading = false;
+                  }
+                },
+                builder: (context, state) {
+                  return BlocBuilder<LoginCubit, LoginCubitBloc>(
+                      builder: (context, bloc) {
+                    return SizedBox(
+                      height: getHeight(12),
+                      width: (getWidth(10) * (imageLength)).toDouble(),
+                      child: ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: imageLength,
+                        itemBuilder: (context, index) {
+                          return AnimatedContainer(
+                            duration: const Duration(milliseconds: 200),
+                            height: bloc.currentPage == index
+                                ? getWidth(10)
+                                : getWidth(5),
+                            width: bloc.currentPage == index
+                                ? getWidth(10)
+                                : getWidth(5),
+                            decoration: BoxDecoration(
+                              color: AppColor.skGreenColor,
+                              border: Border.all(
+                                color: AppColor.skGreenColor,
+                                width: bloc.currentPage == index
+                                    ? getWidth(2)
+                                    : getWidth(0.3),
+                              ),
+                              shape: BoxShape.circle,
+                            ),
+                          );
+                        },
+                        separatorBuilder: (context, index) {
+                          return SizedBox(
+                            width: getWidth(5),
+                          );
+                        },
+                      ),
+                    );
+                  });
+                },
+              ),
+            ),
+
+            //Leaf 1 right bottom
+            Positioned(
+              bottom: 0,
+              right: 15,
+              child: Transform.rotate(
+                angle: 200,
+                child: SizedBox(
+                  height: getHeight(65),
+                  child: LeafTwoAnimation(),
+                ),
+              ),
+            ),
+
+            //Leaf 2 bottom left
+            Positioned(
+              bottom: 0,
+              left: 0,
+              child: Transform.rotate(
+                angle: 120,
+                child: SizedBox(
+                  height: getHeight(65),
+                  child: LeafTwoAnimation(),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<Object?> pushToDashboard(BuildContext context) {
+    return Navigator.pushNamedAndRemoveUntil(
+      context,
+      AppRoutes.dashboardRoute,
+      (route) => false,
+    );
+  }
+}
+
+class LoginUpperWidget extends StatefulWidget {
+  const LoginUpperWidget({super.key});
+
+  @override
+  State<LoginUpperWidget> createState() => _LoginUpperWidgetState();
+}
+
+class _LoginUpperWidgetState extends State<LoginUpperWidget> {
   bool isLoading = false;
   List<CachedNetworkImage> imageUrls = [];
   late LoginBloc _loginBloc;
@@ -37,13 +692,6 @@ class _LoginPageState extends State<LoginPage> {
   Timer? _timer;
   GlobalKey<FormState> key = GlobalKey<FormState>();
   late LoginCubit _loginCubit;
-
-  bool isSignUp = false;
-
-  //login controller
-  TextEditingController userNameController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passController = TextEditingController();
 
   @override
   void initState() {
@@ -79,697 +727,97 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
-  bool _passVisible = false;
   @override
   Widget build(BuildContext context) {
-    var bottomInset = MediaQuery.of(context).viewInsets.bottom;
-
-    return SafeArea(
-      child: Scaffold(
-          appBar: null,
-          backgroundColor: Colors.white,
-          body: Stack(
-            children: [
-              // Top Container with PageView
-              Stack(
-                children: [
-                  firstWave(),
-                  BlocConsumer<LoginBloc, LoginState>(
-                      listener: (context, state) {
-                    if (state is LoginImageListState) {
-                      setState(() {
-                        isLoading = false;
-                        imageUrls.addAll(
-                          state.imagesList.map(
-                            (e) => CachedNetworkImage(
-                              imageUrl: e,
-                              fit: BoxFit.cover,
-                              placeholder: (context, url) => Image.asset(
-                                AppImages.kMarigold,
-                                fit: BoxFit.cover,
-                              ),
-                              errorWidget: (context, url, error) => Image.asset(
-                                AppImages.kMarigold,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                        );
-                        imageUrls.shuffle(Random());
-                      });
-                      _startAutomaticPageChange();
-                    }
-                    if (state is FailureLoginState) {
-                      isLoading = false;
-                    }
-                    if (state is LoadingState) {
-                      isLoading = true;
-                    }
-                  }, builder: (context, state) {
-                    return ClipPath(
-                      clipper: WaveClipper(),
-                      child: Container(
-                        height: HEIGHT * 0.28,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          boxShadow: [
-                            BoxShadow(
-                              offset: const Offset(0, 0),
-                              spreadRadius: 0.6,
-                              blurRadius: 0.5,
-                              color: Colors.grey.withOpacity(0.4),
-                            ),
-                          ],
-                        ),
-                        child: Center(
-                          child: isLoading
-                              ? pageViewImages(
-                                  context,
-                                  child: Image.asset(
-                                    AppImages.kMarigold,
-                                    fit: BoxFit.cover,
-                                  ),
-                                )
-                              : PageView.builder(
-                                  reverse: false,
-                                  itemCount: imageUrls.length,
-                                  controller: _pageController,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  onPageChanged: (index) {
-                                    _currentIndex = index;
-                                    _loginCubit.changeCurrentPage(index);
-                                  },
-                                  itemBuilder: (context, index) {
-                                    return pageViewImages(context,
-                                        child: imageUrls[index]);
-                                  },
-                                ),
-                        ),
-                      ),
-                    );
-                  }),
+    return Stack(
+      children: [
+        firstWave(),
+        BlocConsumer<LoginBloc, LoginState>(listener: (context, state) {
+          if (state is LoginImageListState) {
+            setState(() {
+              isLoading = false;
+              imageUrls.addAll(
+                state.imagesList.map(
+                  (e) => CachedNetworkImage(
+                    imageUrl: e,
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => Image.asset(
+                      AppImages.kMarigold,
+                      fit: BoxFit.cover,
+                    ),
+                    errorWidget: (context, url, error) => Image.asset(
+                      AppImages.kMarigold,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+              );
+              imageUrls.shuffle(Random());
+            });
+            _startAutomaticPageChange();
+          }
+          if (state is FailureLoginState) {
+            isLoading = false;
+          }
+          if (state is LoadingState) {
+            isLoading = true;
+          }
+        }, builder: (context, state) {
+          return ClipPath(
+            clipper: WaveClipper(),
+            child: Container(
+              height: getHeight(225),
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                // color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    offset: const Offset(0, 0),
+                    spreadRadius: 0.6,
+                    blurRadius: 0.5,
+                    color: Colors.grey.withOpacity(0.4),
+                  ),
                 ],
               ),
-
-              // Bottom Sheet that can be dragged up and down
-              DraggableScrollableSheet(
-                initialChildSize: 0.788,
-                minChildSize: 0.788,
-                maxChildSize: bottomInset > 0 ? 0.9 : 0.795,
-                builder: (context, scrollController) {
-                  return Stack(
-                    alignment: AlignmentDirectional.topCenter,
-                    children: [
-                      ClipPath(
-                        clipper: TopWaveClipper(),
-                        child: Container(
-                          padding: const EdgeInsets.only(top: 60),
-                          alignment: Alignment.center,
-                          decoration: const BoxDecoration(
-                            color: AppColor.skWhite,
-                          ),
-                          child: ListView(
-                            controller: scrollController,
-                            children: [
-                              !isSignUp
-                                  ? const Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      mainAxisSize: MainAxisSize.max,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          'WELCOME BACK',
-                                          style: TextStyle(
-                                              color: AppColor.skGreenColor,
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 18),
-                                        ),
-                                        Text(
-                                          'Login to your Account',
-                                          style: TextStyle(
-                                              color: AppColor.skGreenColor,
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 12),
-                                        ),
-                                      ],
-                                    )
-                                  : const Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      mainAxisSize: MainAxisSize.max,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          'REGISTER',
-                                          style: TextStyle(
-                                              color: AppColor.skGreenColor,
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 18),
-                                        ),
-                                        Text(
-                                          'Create your new account',
-                                          style: TextStyle(
-                                              color: AppColor.skGreenColor,
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 12),
-                                        ),
-                                      ],
-                                    ),
-
-                              const SizedBox(
-                                height: 30,
-                              ),
-                              Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                mainAxisSize: MainAxisSize.max,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Form(
-                                    key: key,
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      mainAxisSize: MainAxisSize.max,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        if (isSignUp)
-                                          SizedBox(
-                                            width: 280,
-                                            child: TextFormField(
-                                              controller: userNameController,
-                                              cursorColor:
-                                                  AppColor.skGreenColor,
-                                              cursorErrorColor:
-                                                  AppColor.skGreenColor,
-                                              style: const TextStyle(
-                                                color: AppColor.skGreenColor,
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w400,
-                                              ),
-                                              textAlign: TextAlign.start,
-                                              keyboardType:
-                                                  TextInputType.emailAddress,
-                                              validator: (value) =>
-                                                  usernameValidator(value),
-                                              decoration: formFieldDecoration(
-                                                hinText: 'Enter full name',
-                                                prefixIcon: const Icon(
-                                                  Icons.email,
-                                                  size: 25,
-                                                  color: AppColor.skGreenColor,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        if (isSignUp)
-                                          const SizedBox(
-                                            height: 10,
-                                          ),
-                                        SizedBox(
-                                          width: 280,
-                                          child: TextFormField(
-                                            controller: emailController,
-                                            cursorColor: AppColor.skGreenColor,
-                                            cursorErrorColor:
-                                                AppColor.skGreenColor,
-                                            style: const TextStyle(
-                                              color: AppColor.skGreenColor,
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w400,
-                                            ),
-                                            textAlign: TextAlign.start,
-                                            keyboardType:
-                                                TextInputType.emailAddress,
-                                            validator: (value) =>
-                                                emailValidator(value),
-                                            decoration: formFieldDecoration(
-                                              hinText: 'Enter your email',
-                                              prefixIcon: const Icon(
-                                                Icons.email,
-                                                size: 25,
-                                                color: AppColor.skGreenColor,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                        SizedBox(
-                                          width: 280,
-                                          child: StatefulBuilder(
-                                              builder: (context, setState) {
-                                            return TextFormField(
-                                              controller: passController,
-                                              cursorColor:
-                                                  AppColor.skGreenColor,
-                                              cursorErrorColor:
-                                                  AppColor.skGreenColor,
-                                              style: const TextStyle(
-                                                color: AppColor.skGreenColor,
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w400,
-                                              ),
-                                              textAlign: TextAlign.start,
-                                              keyboardType:
-                                                  TextInputType.visiblePassword,
-                                              validator: (value) =>
-                                                  passwordValidator(value),
-                                              obscureText: _passVisible,
-                                              obscuringCharacter: '*',
-                                              decoration: formFieldDecoration(
-                                                hinText: 'Password',
-                                                prefixIcon: const Icon(
-                                                  Icons.lock,
-                                                  size: 25,
-                                                  color: AppColor.skGreenColor,
-                                                ),
-                                                suffixIcon: GestureDetector(
-                                                  onTap: () => setState(() =>
-                                                      _passVisible =
-                                                          !_passVisible),
-                                                  child: Icon(
-                                                    _passVisible
-                                                        ? Icons.visibility_off
-                                                        : Icons.visibility,
-                                                    size: 25,
-                                                    color:
-                                                        AppColor.skGreenColor,
-                                                  ),
-                                                ),
-                                              ),
-                                            );
-                                          }),
-                                        ),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                        if (!isSignUp)
-                                          const SizedBox(
-                                            width: 280,
-                                            child: Align(
-                                              alignment: AlignmentDirectional
-                                                  .centerEnd,
-                                              child: Text(
-                                                'Forgot password?',
-                                                style: TextStyle(
-                                                    fontSize: 12,
-                                                    fontWeight:
-                                                        FontWeight.w500),
-                                              ),
-                                            ),
-                                          ),
-                                        if (!isSignUp)
-                                          const SizedBox(
-                                            height: 10,
-                                          ),
-                                        SizedBox(
-                                          width: 280,
-                                          height: 40,
-                                          child: MaterialButton(
-                                            color: AppColor.skGreenColor,
-                                            elevation: 2.0,
-                                            padding: EdgeInsets.zero,
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(20),
-                                            ),
-                                            onPressed: () async {
-                                              if (key.currentState!
-                                                  .validate()) {
-                                                if (!isSignUp) {
-                                                  try {
-                                                    UserCredential?
-                                                        userCredential =
-                                                        await userLogin(
-                                                            email:
-                                                                emailController
-                                                                    .text
-                                                                    .toString()
-                                                                    .trim(),
-                                                            password:
-                                                                passController
-                                                                    .text
-                                                                    .toString()
-                                                                    .trim());
-
-                                                    USER_CREDENTIAL =
-                                                        userCredential;
-                                                    Navigator
-                                                        .pushNamedAndRemoveUntil(
-                                                      context,
-                                                      AppRoutes.dashboardRoute,
-                                                      (route) => false,
-                                                    );
-                                                  } catch (e) {
-                                                    showSnackbar(
-                                                        context,
-                                                        e.toString(),
-                                                        Colors.red);
-                                                  }
-                                                } else {
-                                                  try {
-                                                    UserCredential?
-                                                        userCredential =
-                                                        await userRegister(
-                                                            email: emailController
-                                                                .text
-                                                                .toString()
-                                                                .trim(),
-                                                            password:
-                                                                passController
-                                                                    .text
-                                                                    .toString()
-                                                                    .trim(),
-                                                            userName:
-                                                                userNameController
-                                                                    .text
-                                                                    .toString()
-                                                                    .trim());
-
-                                                    USER_CREDENTIAL =
-                                                        userCredential;
-                                                    Navigator
-                                                        .pushNamedAndRemoveUntil(
-                                                      context,
-                                                      AppRoutes.dashboardRoute,
-                                                      (route) => false,
-                                                    );
-                                                  } on FirebaseException catch (e) {
-                                                    showSnackbar(
-                                                        context,
-                                                        e.toString(),
-                                                        Colors.red);
-                                                  }
-                                                }
-                                              }
-                                            },
-                                            child: Center(
-                                              child: Text(
-                                                !isSignUp ? 'Login' : 'Sign Up',
-                                                style: const TextStyle(
-                                                  color: AppColor.skWhite,
-                                                  fontWeight: FontWeight.w500,
-                                                  fontSize: 14,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                        Container(
-                                          height: 40,
-                                          width: 280,
-                                          decoration: const BoxDecoration(
-                                            image: DecorationImage(
-                                              image: AssetImage(
-                                                  AppImages.kGreenLine2),
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          height: 20,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Container(
-                                          height: 0.5,
-                                          width: 120,
-                                          decoration: const BoxDecoration(
-                                              color: AppColor.skBlack),
-                                        ),
-                                        const Text(
-                                          ' Or Continue With ',
-                                          style: TextStyle(
-                                              color: AppColor.skBlack,
-                                              fontSize: 12),
-                                        ),
-                                        Container(
-                                          height: 0.5,
-                                          width: 120,
-                                          decoration: const BoxDecoration(
-                                              color: AppColor.skBlack),
-                                        ),
-                                      ]),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      GestureDetector(
-                                        onTap: () async {
-                                          try {
-                                            await userSignInWithGoogle();
-                                          } catch (e) {
-                                            showSnackbar(context, e.toString(),
-                                                Colors.red);
-                                          }
-                                        },
-                                        child: Container(
-                                          width: 35,
-                                          height: 35,
-                                          decoration: const BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            image: DecorationImage(
-                                              image: AssetImage(
-                                                  AppImages.btnGoogle),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      if (Platform.isIOS) ...[
-                                        const SizedBox(
-                                          width: 40,
-                                        ),
-                                        GestureDetector(
-                                          onTap: () async {
-                                            try {
-                                              await userSignInApple();
-                                            } catch (e) {
-                                              showSnackbar(context,
-                                                  e.toString(), Colors.red);
-                                            }
-                                          },
-                                          child: Container(
-                                            width: 35,
-                                            height: 35,
-                                            decoration: const BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              image: DecorationImage(
-                                                image: AssetImage(
-                                                    AppImages.btnApple),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ]
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        isSignUp = !isSignUp;
-                                        userNameController.clear();
-                                        emailController.clear();
-                                        passController.clear();
-                                      });
-                                    },
-                                    child: Text.rich(
-                                      TextSpan(
-                                          text: !isSignUp
-                                              ? 'Don\'t have account  '
-                                              : 'Already have an account?  ',
-                                          style: const TextStyle(
-                                              color: AppColor.skBlack),
-                                          children: [
-                                            TextSpan(
-                                                text: !isSignUp
-                                                    ? 'Sign In'
-                                                    : 'Login',
-                                                style: const TextStyle(
-                                                    fontSize: 15,
-                                                    fontWeight: FontWeight.w600,
-                                                    color:
-                                                        AppColor.skGreenColor))
-                                          ]),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(
-                                height: 30,
-                              ),
-
-                              //SKIP
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  GestureDetector(
-                                    onTap: () {
-                                      hiveInstance?.setIsGuest(true);
-                                      Navigator.pushNamedAndRemoveUntil(
-                                        context,
-                                        AppRoutes.dashboardRoute,
-                                        (route) => false,
-                                      );
-                                    },
-                                    child: const Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          'SKIP',
-                                          style: TextStyle(
-                                              fontSize: 15,
-                                              color: AppColor.skGreenColor),
-                                        ),
-                                        Icon(
-                                          Icons.navigate_next_sharp,
-                                          color: AppColor.skGreenColor,
-                                          size: 35,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
+              child: Center(
+                child: isLoading
+                    ? pageViewImages(
+                        context,
+                        child: Image.asset(
+                          AppImages.kMarigold,
+                          fit: BoxFit.cover,
                         ),
+                      )
+                    : PageView.builder(
+                        reverse: false,
+                        itemCount: imageUrls.length,
+                        controller: _pageController,
+                        physics: const NeverScrollableScrollPhysics(),
+                        onPageChanged: (index) {
+                          _currentIndex = index;
+                          _loginCubit.changeCurrentPage(index);
+                        },
+                        itemBuilder: (context, index) {
+                          return pageViewImages(context,
+                              child: imageUrls[index]);
+                        },
                       ),
-
-                      //Current Page Dot Viewer
-                      Padding(
-                        padding: const EdgeInsets.only(top: 5.0),
-                        child: BlocBuilder<LoginCubit, LoginCubitBloc>(
-                            builder: (context, bloc) {
-                          return SizedBox(
-                            height: 12,
-                            width: (10 * (imageUrls.length)).toDouble(),
-                            child: ListView.separated(
-                              scrollDirection: Axis.horizontal,
-                              physics: const NeverScrollableScrollPhysics(),
-                              shrinkWrap: true,
-                              itemCount: imageUrls.length,
-                              itemBuilder: (context, index) {
-                                return AnimatedContainer(
-                                  duration: const Duration(milliseconds: 200),
-                                  height: bloc.currentPage == index ? 10 : 5,
-                                  width: bloc.currentPage == index ? 10 : 5,
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                      color: AppColor.skGreenColor,
-                                      width:
-                                          bloc.currentPage == index ? 2 : 0.3,
-                                    ),
-                                    color: AppColor.skGreenColor,
-                                    shape: BoxShape.circle,
-                                  ),
-                                );
-                              },
-                              separatorBuilder: (context, index) {
-                                return const SizedBox(
-                                  width: 5,
-                                );
-                              },
-                            ),
-                          );
-                        }),
-                      ),
-
-                      //Leaf 1 top left
-                      Positioned(
-                        top: HEIGHT * 0.15,
-                        left: 0,
-                        child: Transform.rotate(
-                          angle: 120,
-                          child: SizedBox(
-                            height: 35,
-                            child: Image.asset(AppImages.kLeaf1),
-                          ),
-                        ),
-                      ),
-
-                      //Leaf 1 right bottom
-                      Positioned(
-                        bottom: 0,
-                        right: 0,
-                        child: Transform.rotate(
-                          angle: 200,
-                          child: SizedBox(
-                            height: 35,
-                            child: Image.asset(AppImages.kLeaf1),
-                          ),
-                        ),
-                      ),
-
-                      //Leaf 2 bottom left
-                      Positioned(
-                        bottom: 0,
-                        left: 0,
-                        child: Transform.rotate(
-                          angle: 120,
-                          child: SizedBox(
-                            height: 35,
-                            child: Image.asset(AppImages.kLeaf2),
-                          ),
-                        ),
-                      ),
-
-                      //Leaf 2 top right
-                      Positioned(
-                        top: HEIGHT * 0.33,
-                        right: 0,
-                        child: Transform.rotate(
-                          angle: -45,
-                          child: SizedBox(
-                            height: 35,
-                            child: Image.asset(AppImages.kLeaf2),
-                          ),
-                        ),
-                      ),
-                    ],
-                  );
-                },
               ),
-            ],
-          )),
+            ),
+          );
+        }),
+      ],
     );
   }
 
-  Container pageViewImages(BuildContext context, {required Widget child}) {
+  Widget pageViewImages(BuildContext context, {required Widget child}) {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.28,
-      width: MediaQuery.of(context).size.width,
+      height: getHeight(225),
+      width: getWidth(392),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: const BorderRadius.all(Radius.elliptical(4, 4)),
+        borderRadius:
+            BorderRadius.all(Radius.elliptical(getHeight(4), getHeight(4))),
         boxShadow: [
           BoxShadow(
             offset: const Offset(0, 0),
@@ -783,15 +831,15 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Opacity firstWave() {
+  Widget firstWave() {
     return Opacity(
       opacity: 0.2,
       child: ClipPath(
         clipper: WaveClipper(),
         child: Container(
           color: Colors.grey,
-          width: WIDTH,
-          height: HEIGHT * 0.288,
+          width: getWidth(392),
+          height: getHeight(231.264),
         ),
       ),
     );

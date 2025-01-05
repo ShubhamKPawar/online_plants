@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:hive/hive.dart';
 import 'package:online_plants_app/core/hive_data/hive_const.dart';
 import 'package:path_provider/path_provider.dart';
@@ -29,10 +28,10 @@ class HivePreference {
   Future<void> _setValue<T>(dynamic key, T value) => _box.put(key, value);
 
   //To check if is login
-  bool getIsLogging() =>
+  bool getIsLoggin() =>
       _getValue(HiveConstants.isLoggedIn, defaultValue: false);
 
-  Future<void> setIsLogging(bool value) =>
+  Future<void> setIsLoggin(bool value) =>
       _setValue(HiveConstants.isLoggedIn, value);
 
   //GUEST LOGIN

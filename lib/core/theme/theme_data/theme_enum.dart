@@ -1,6 +1,7 @@
 // Enum and extension for theme generation
+// ignore_for_file: constant_identifier_names
+
 import 'package:flutter/material.dart';
-import 'package:online_plants_app/core/theme/theme_data/theme_light.dart';
 
 enum ThemeEnum { DARK, LIGHT }
 
@@ -8,11 +9,11 @@ extension ThemeEnumExtension on ThemeEnum {
   ThemeData get generateTheme {
     switch (this) {
       case ThemeEnum.LIGHT:
-        return ThemeLight.instance.theme!;
+        return ThemeData();
       case ThemeEnum.DARK:
-        return ThemeLight.instance.theme!;
+        return ThemeData();
       default:
-        return ThemeLight.instance.theme!;
+        return ThemeData();
     }
   }
 }
