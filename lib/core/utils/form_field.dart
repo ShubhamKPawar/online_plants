@@ -5,7 +5,7 @@ InputDecoration formFieldDecoration({
   String? labelText,
   Widget? label,
   bool isEdit = true,
-  String? hinText,
+  String? hintText,
   String? suffixText,
   Widget? suffixIcon,
   Widget? prefixIcon,
@@ -40,10 +40,11 @@ InputDecoration formFieldDecoration({
         borderSide: BorderSide.none,
         borderRadius: BorderRadius.all(Radius.circular(5.0)),
       ),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 1, vertical: 0),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 1, vertical: 0)
+          .copyWith(right: 4, left: 4),
       fillColor: AppColor.skGreenColor.withOpacity(isEdit ? 0.2 : 0.03),
       filled: true,
-      hintText: hinText,
+      hintText: hintText,
       labelStyle: const TextStyle(
         color: AppColor.skGreenColor,
         fontSize: 14,

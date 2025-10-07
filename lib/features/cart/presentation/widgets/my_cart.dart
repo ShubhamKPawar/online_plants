@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:online_plants_app/common/add_product.dart';
+import 'package:online_plants_app/common/like_product.dart';
 import 'package:online_plants_app/core/constants/app_images.dart';
+import 'package:online_plants_app/core/theme/theme_data/app_text_styles.dart';
 import 'package:online_plants_app/core/utils/app_color.dart';
 import 'package:online_plants_app/core/utils/size.dart';
 
@@ -14,12 +17,13 @@ class MyCartItems extends StatefulWidget {
 class _MyCartItemsState extends State<MyCartItems> {
   @override
   Widget build(BuildContext context) {
-    double opacity = 0.1 * (widget.index % 10);
+    double opacity = 0.1 * (widget.index % 4);
     Color greenColor = AppColor.skGreen.withOpacity(opacity);
     return Padding(
       padding: EdgeInsets.symmetric(
-          vertical: getHeight(widget.index == 0 ? 43 : 15),
-          horizontal: getWidth(10)),
+        vertical: getHeight(25),
+        horizontal: getWidth(20),
+      ),
       child: Stack(
         clipBehavior: Clip.none,
         children: [
@@ -27,112 +31,134 @@ class _MyCartItemsState extends State<MyCartItems> {
             color: greenColor,
             elevation: 1,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(getHeight(20)),
+              borderRadius: BorderRadius.circular(getHeight(15)),
             ),
             child: SizedBox(
-              height: getHeight(120),
-              width: getWidth(392),
+              height: getHeight(100),
               child: Padding(
                 padding: EdgeInsets.only(
-                    left: getWidth(160),
-                    top: getHeight(20),
-                    bottom: getHeight(20),
-                    right: getWidth(20)),
+                  left: getWidth(140),
+                ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Marigold",
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                              fontSize: 15, fontWeight: FontWeight.w600),
-                        ),
-                        Text.rich(
-                          TextSpan(
-                            children: [
-                              TextSpan(
-                                text: '120 ',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w600, fontSize: 12),
-                              ),
-                              TextSpan(
-                                text: 'plants/lot',
-                                style: TextStyle(
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
-                            ],
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        vertical: getHeight(10),
+                        horizontal: getWidth(20),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Text(
+                            "Marigold",
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: Theme.of(context).textTheme.titleMedium ??
+                                TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.w600),
                           ),
-                        ),
-                        Text.rich(
-                          TextSpan(
-                              text: '\u{20B9} ',
-                              style: TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.w400),
+                          Text.rich(
+                            TextSpan(
                               children: [
                                 TextSpan(
-                                  text: '20/-',
-                                  style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w600),
-                                )
-                              ]),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
+                                  text: '120 ',
+                                  style: Theme.of(context)
+                                          .textTheme
+                                          .bodyLarge
+                                          ?.copyWith(
+                                              fontFamily: AppTextStyles
+                                                  .numberFontFamily) ??
+                                      TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 18),
+                                ),
+                                TextSpan(
+                                  text: 'plants/lot',
+                                  style:
+                                      Theme.of(context).textTheme.labelSmall ??
+                                          TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Text.rich(
+                            TextSpan(
+                                text: '\u{20B9} ',
+                                style: Theme.of(context).textTheme.labelLarge ??
+                                    TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w400),
+                                children: [
+                                  TextSpan(
+                                    text: '20/-',
+                                    style: Theme.of(context)
+                                            .textTheme
+                                            .bodyLarge
+                                            ?.copyWith(
+                                                fontFamily: AppTextStyles
+                                                    .numberFontFamily) ??
+                                        TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w500),
+                                  )
+                                ]),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
                     ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          height: getHeight(25),
-                          width: getHeight(25),
-                          decoration: BoxDecoration(
-                              border: Border.all(width: 0.5),
-                              color: AppColor.skWhite,
-                              borderRadius:
-                                  BorderRadius.circular(getHeight(8))),
-                          child: Center(
-                            child: Icon(
-                              Icons.remove,
-                              color: AppColor.skBlack,
-                              size: getHeight(20),
+                    SizedBox(
+                      width: getWidth(55),
+                      child: Padding(
+                        padding: EdgeInsets.zero,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            AddProduct(
+                              addType: AddType.vertical,
+                              height: 30,
+                              width: 55,
+                              add: false,
+                              icon: Icon(
+                                Icons.remove,
+                                size: getHeight(25),
+                                color: AppColor.skWhite,
+                              ),
+                              callback: () {},
                             ),
-                          ),
-                        ),
-                        const Text(
-                          '2',
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Container(
-                          height: getHeight(25),
-                          width: getHeight(25),
-                          decoration: BoxDecoration(
-                              border: Border.all(width: 0.5),
-                              color: AppColor.skWhite,
-                              borderRadius:
-                                  BorderRadius.circular(getHeight(8))),
-                          child: Center(
-                            child: Icon(
-                              Icons.add,
-                              color: AppColor.skBlack,
-                              size: getHeight(20),
+                            Text(
+                              '2',
+                              style: Theme.of(context)
+                                      .textTheme
+                                      .titleLarge
+                                      ?.copyWith(
+                                          fontFamily:
+                                              AppTextStyles.numberFontFamily) ??
+                                  TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                             ),
-                          ),
+                            AddProduct(
+                              addType: AddType.vertical,
+                              height: 30,
+                              width: 60,
+                              callback: () {},
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
                   ],
                 ),
@@ -140,8 +166,8 @@ class _MyCartItemsState extends State<MyCartItems> {
             ),
           ),
           Positioned(
-            top: -getHeight(45),
             left: getWidth(10),
+            bottom: getHeight(10),
             child: Card(
               color: greenColor,
               elevation: 1,
@@ -150,52 +176,31 @@ class _MyCartItemsState extends State<MyCartItems> {
               ),
               child: Stack(
                 children: [
-                  Padding(
-                    padding: EdgeInsets.only(
-                      left: getWidth(10),
-                      right: getWidth(10),
-                      top: getHeight(10),
-                      bottom: getHeight(10),
-                    ),
-                    child: Container(
-                      height: getHeight(130),
-                      width: getWidth(100),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(getHeight(15)),
-                          boxShadow: [
-                            BoxShadow(
-                                color: AppColor.skBlack.withOpacity(0.6),
-                                offset: const Offset(3, 3),
-                                blurRadius: 0.8,
-                                spreadRadius: 0.4)
-                          ]),
-                      child: ClipRRect(
+                  Container(
+                    height: getHeight(120),
+                    width: getWidth(130),
+                    decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(getHeight(15)),
-                        child: const Image(
-                          image: AssetImage(AppImages.kTomato),
-                          fit: BoxFit.cover,
-                        ),
+                        boxShadow: [
+                          BoxShadow(
+                              color: AppColor.skBlack.withOpacity(0.5),
+                              offset: Offset(getHeight(2), getWidth(2)),
+                              blurRadius: 0.3,
+                              spreadRadius: 0.2)
+                        ]),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(getHeight(15)),
+                      child: const Image(
+                        image: AssetImage(AppImages.kTomato),
+                        fit: BoxFit.cover,
                       ),
                     ),
                   ),
                   Positioned(
-                      right: getWidth(8),
-                      top: getHeight(8),
-                      child: Container(
-                        height: getHeight(25),
-                        width: getHeight(25),
-                        decoration: BoxDecoration(
-                            color: AppColor.skWhite,
-                            borderRadius: BorderRadius.circular(getHeight(8))),
-                        child: GestureDetector(
-                          onTap: () {},
-                          child: Icon(
-                            Icons.favorite_border_outlined,
-                            color: AppColor.skBlack,
-                            size: getHeight(20),
-                          ),
-                        ),
-                      ))
+                    right: getWidth(4),
+                    top: getHeight(4),
+                    child: LikeProduct(),
+                  )
                 ],
               ),
             ),

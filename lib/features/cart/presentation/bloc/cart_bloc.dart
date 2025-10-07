@@ -7,5 +7,8 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     on<CartShowContainerEvent>((event, emit) {
       emit(CartContainerState(event.showContainer));
     });
+    on<AddToCartEvent>((event, emit) {
+      emit(AddToCartState());
+    });
   }
 }

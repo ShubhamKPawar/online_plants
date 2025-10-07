@@ -8,5 +8,8 @@ class BottomNavigationBloc
     on<BottomNavigationTabChanged>((event, emit) {
       emit(BottomNavigationTabState(event.tabIndex));
     });
+    on<BottomNavigationPageChanged>((event, emit) {
+      emit(BottomNavigationPageChangeState(event.tabIndex));
+    });
   }
 }

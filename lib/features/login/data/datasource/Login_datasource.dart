@@ -1,13 +1,14 @@
-import 'package:firebase_auth/firebase_auth.dart';
-
 abstract class LoginDatasource {
   Future<List<String>> getLoginImages();
-  Future<UserCredential?> loginUsingEmailAndPass(
-      {required String email, required String password});
-  Future<UserCredential?> registerNewUser(
+  Future<dynamic> loginUsingEmailAndPass({
+    required String email,
+    required String password,
+  });
+  Future<dynamic> registerNewUser(
       {required String email,
       required String password,
-      required String userName});
-  Future<UserCredential?> signInWithGoogleId();
-  Future<UserCredential?> signInWithAppleId();
+      required String userName,
+      required String mobileNo});
+  Future<dynamic> signInWithGoogleId();
+  Future<dynamic> signInWithAppleId();
 }

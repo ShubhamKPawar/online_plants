@@ -1,21 +1,21 @@
-import 'package:online_plants_app/core/constants/constant.dart';
+import 'package:online_plants_app/core/utils/size_config.dart';
 
 double getHeight(double height) {
-  if (!ISLANDSCAPE) {
+  if (!SizeConfig.isLandscape) {
     double result = height / 803;
-    return HEIGHT * result;
+    return SizeConfig.devideHeigth * result;
   } else {
     double result = height / 392;
-    return HEIGHT * result;
+    return SizeConfig.devideHeigth * result;
   }
 }
 
 double getWidth(double width) {
-  if (!ISLANDSCAPE) {
+  if (!SizeConfig.isLandscape) {
     double result = width / 392;
-    return WIDTH * result;
+    return SizeConfig.deviceWidth * result;
   } else {
     double result = width / 774;
-    return WIDTH * result;
+    return SizeConfig.deviceWidth * result;
   }
 }

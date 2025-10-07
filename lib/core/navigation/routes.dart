@@ -1,14 +1,26 @@
 // import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
+import 'package:online_plants_app/admin/admin_dashboard.dart';
+import 'package:online_plants_app/admin/features/manage_plants.dart';
+import 'package:online_plants_app/admin/features/admin_profile.dart';
+import 'package:online_plants_app/admin/features/category_page.dart';
 import 'package:online_plants_app/core/navigation/custom_navigation.dart';
+import 'package:online_plants_app/core/services_data/model/seller_model.dart';
 import 'package:online_plants_app/features/dashboard_setup/presentation/pages/dashboard.dart';
 import 'package:online_plants_app/features/cart/presentation/pages/cart.dart';
 import 'package:online_plants_app/features/dashboard_setup/presentation/pages/splash.dart';
 import 'package:online_plants_app/features/home/presentation/pages/home.dart';
+import 'package:online_plants_app/features/home/presentation/pages/more_products.dart';
 import 'package:online_plants_app/features/login/presentation/pages/login_page.dart';
+import 'package:online_plants_app/features/profile/presentation/pages/addresses.dart';
+import 'package:online_plants_app/features/profile/presentation/pages/my_orders.dart';
+import 'package:online_plants_app/features/profile/presentation/pages/notifications.dart';
 import 'package:online_plants_app/features/profile/presentation/pages/profile.dart';
+import 'package:online_plants_app/features/profile/presentation/pages/track_order.dart';
+import 'package:online_plants_app/features/profile/presentation/pages/user_profile.dart';
+import 'package:online_plants_app/features/profile/presentation/pages/wishlist.dart';
 import 'package:online_plants_app/features/search/presentation/pages/search.dart';
-import 'package:online_plants_app/features/timeline/presentation/pages/timeline.dart';
+import 'package:online_plants_app/features/timeline/presentation/pages/lateset_timeline.dart';
 
 class AppRoutes {
   static const String splashRoute = '/';
@@ -16,9 +28,24 @@ class AppRoutes {
   static const String homeRoute = '/home';
   static const String cartRoute = '/cart';
   static const String searchRoute = '/search';
-  static const String timelineRoute = '/timeline';
+  static const String latestTimelineRoute = '/latestTimeline';
   static const String profileRoute = '/profile';
   static const String loginRoute = '/login';
+  static const String moreProducts = '/moreProducts:id:title';
+  static const String userProfile = '/userProfile';
+  static const String userAddresses = '/userAddresses';
+  static const String userNotifications = '/userNotifications';
+  static const String wishlistProducts = '/wishlist';
+  static const String myOrders = '/myOrders';
+  static const String trackOrder = '/trackOrder';
+
+  //ADMIN
+  static const String adminDashboard = '/adminDashboard';
+  static const String adminAddCategory = '/adminAddCategory';
+  static const String adminAddPlant = '/adminAddPlant';
+
+  static const String adminProfile = '/adminProfile';
+
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case splashRoute:
@@ -38,6 +65,16 @@ class AppRoutes {
             type: PageTransitionType.fade,
             duration: const Duration(milliseconds: 100),
             child: const Home());
+      case moreProducts:
+        final args = settings.arguments as Map<String, String>;
+        return PageTransition(
+          type: PageTransitionType.fade,
+          duration: const Duration(milliseconds: 100),
+          child: MoreProducts(
+            title: args['title'] ?? '',
+            id: args['id'] ?? '',
+          ),
+        );
       case cartRoute:
         return PageTransition(
             type: PageTransitionType.fade,
@@ -48,21 +85,87 @@ class AppRoutes {
             type: PageTransitionType.fade,
             duration: const Duration(milliseconds: 100),
             child: const Search());
-      case timelineRoute:
+      case latestTimelineRoute:
         return PageTransition(
             type: PageTransitionType.fade,
             duration: const Duration(milliseconds: 100),
-            child: const Timeline());
+            child: const LatestTimeline());
       case profileRoute:
         return PageTransition(
             type: PageTransitionType.fade,
             duration: const Duration(milliseconds: 100),
             child: const Profile());
+      case userProfile:
+        return PageTransition(
+            type: PageTransitionType.fade,
+            duration: const Duration(milliseconds: 100),
+            child: const UserProfile());
+      case userAddresses:
+        return PageTransition(
+          type: PageTransitionType.fade,
+          duration: const Duration(milliseconds: 100),
+          child: Addresses(),
+        );
+      case userNotifications:
+        return PageTransition(
+          type: PageTransitionType.fade,
+          duration: const Duration(milliseconds: 100),
+          child: Notifications(),
+        );
+      case wishlistProducts:
+        return PageTransition(
+            child: WishlistProducts(),
+            type: PageTransitionType.fade,
+            duration: Duration(milliseconds: 100));
+      case myOrders:
+        return PageTransition(
+            child: MyOrders(),
+            type: PageTransitionType.fade,
+            duration: Duration(milliseconds: 100));
+
+      case trackOrder:
+        final args = settings.arguments as Map<String, String>;
+        return PageTransition(
+          type: PageTransitionType.fade,
+          duration: const Duration(milliseconds: 100),
+          child: TrackOrder(
+            id: args['id'] ?? '',
+          ),
+        );
       case loginRoute:
         return PageTransition(
             type: PageTransitionType.fade,
             duration: const Duration(milliseconds: 100),
             child: const LoginPage());
+      //*******************Admin*************************//
+      case adminDashboard:
+        return PageTransition(
+            type: PageTransitionType.fade,
+            duration: const Duration(milliseconds: 100),
+            child: const AdminDashboard());
+      case adminAddCategory:
+        return PageTransition(
+            type: PageTransitionType.fade,
+            duration: const Duration(milliseconds: 100),
+            child: const AddCategoryPage());
+      case adminAddPlant:
+        return PageTransition(
+            type: PageTransitionType.fade,
+            duration: const Duration(milliseconds: 100),
+            child: const ManagePlantsPage());
+
+      case adminProfile:
+        Map<String, dynamic> args = settings.arguments as Map<String, dynamic>;
+        return PageTransition(
+          type: PageTransitionType.fade,
+          duration: const Duration(milliseconds: 100),
+          child: AdminProfile(
+            fromAdmin: args['fromAdmin'] ?? false,
+            sellerModel:
+                args['seller'] == null ? null : args['seller'] as SellerModel,
+          ),
+        );
+
       default:
         return PageTransition(
             type: PageTransitionType.fade,
@@ -71,7 +174,6 @@ class AppRoutes {
     }
   }
 }
-
 
 // class AppRoutes {
 //   static const String splashScreenRoute = "splashScreen";

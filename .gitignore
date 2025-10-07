@@ -45,3 +45,6 @@ app.*.map.json
 /lib/res/
 /lib/generated/
 /pubspec.lock
+
+# FVM Version Cache
+.fvm/

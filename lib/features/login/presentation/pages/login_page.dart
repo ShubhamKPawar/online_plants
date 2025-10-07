@@ -1,26 +1,24 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:math';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:online_plants_app/core/constants/app_images.dart';
-import 'package:online_plants_app/core/constants/constant.dart';
 import 'package:online_plants_app/core/constants/lottie.dart';
 import 'package:online_plants_app/core/navigation/routes.dart';
+import 'package:online_plants_app/core/services_data/user_info_bloc/user_info_bloc.dart';
+import 'package:online_plants_app/core/services_data/user_info_bloc/user_info_event.dart';
+import 'package:online_plants_app/core/services_data/user_info_bloc/user_info_manager.dart';
+import 'package:online_plants_app/core/services_data/user_info_bloc/user_info_state.dart';
 import 'package:online_plants_app/core/utils/app_color.dart';
 import 'package:online_plants_app/core/utils/clippers.dart';
-import 'package:online_plants_app/core/utils/form_field.dart';
 import 'package:online_plants_app/core/utils/size.dart';
 import 'package:online_plants_app/core/utils/util_data.dart';
-import 'package:online_plants_app/core/utils/validation.dart';
-import 'package:online_plants_app/features/login/presentation/bloc/login_bloc.dart';
 import 'package:online_plants_app/features/login/presentation/bloc/login_cubit.dart';
 import 'package:online_plants_app/features/login/presentation/bloc/login_cubit_bloc.dart';
-import 'package:online_plants_app/features/login/presentation/bloc/login_event.dart';
-import 'package:online_plants_app/features/login/presentation/bloc/login_state.dart';
+import 'package:online_plants_app/features/login/presentation/widgets/login_fields.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -33,19 +31,20 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
       child: Scaffold(
-          appBar: null,
-          // backgroundColor: Colors.white,
           body: Stack(
-            children: [
-              // Top Container with PageView
-              LoginUpperWidget(),
+        children: [
+          // Top Container with PageView
+          LoginUpperWidget(),
 
-              // Bottom Sheet that can be dragged up and down
-              LoginWidget(),
-            ],
-          )),
+          // Bottom Sheet that can be dragged up and down
+          LoginWidget(),
+        ],
+      )),
     );
   }
 }
@@ -66,17 +65,18 @@ class _LoginWidgetState extends State<LoginWidget> {
   TextEditingController userNameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passController = TextEditingController();
+  TextEditingController mobileNoController = TextEditingController();
 
   bool _passVisible = false;
 
   int imageLength = 0;
 
-  late LoginBloc _loginBloc;
+  late UserInfoBloc _loginBloc;
 
   @override
   void initState() {
     super.initState();
-    _loginBloc = context.read<LoginBloc>();
+    _loginBloc = context.read<UserInfoBloc>();
   }
 
   @override
@@ -156,26 +156,8 @@ class _LoginWidgetState extends State<LoginWidget> {
                               if (isSignUp)
                                 SizedBox(
                                   width: getWidth(280),
-                                  child: TextFormField(
-                                    controller: userNameController,
-                                    cursorColor: AppColor.skGreenColor,
-                                    cursorErrorColor: AppColor.skGreenColor,
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                    textAlign: TextAlign.start,
-                                    keyboardType: TextInputType.emailAddress,
-                                    validator: (value) =>
-                                        usernameValidator(value),
-                                    decoration: formFieldDecoration(
-                                      hinText: 'Enter full name',
-                                      prefixIcon: Icon(
-                                        Icons.email,
-                                        size: getHeight(25),
-                                      ),
-                                    ),
-                                  ),
+                                  child: UserNameField(
+                                      userNameController: userNameController),
                                 ),
                               if (isSignUp)
                                 SizedBox(
@@ -183,25 +165,8 @@ class _LoginWidgetState extends State<LoginWidget> {
                                 ),
                               SizedBox(
                                 width: getWidth(280),
-                                child: TextFormField(
-                                  controller: emailController,
-                                  cursorColor: AppColor.skGreenColor,
-                                  cursorErrorColor: AppColor.skGreenColor,
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                  textAlign: TextAlign.start,
-                                  keyboardType: TextInputType.emailAddress,
-                                  validator: (value) => emailValidator(value),
-                                  decoration: formFieldDecoration(
-                                    hinText: 'Enter your email',
-                                    prefixIcon: Icon(
-                                      Icons.email,
-                                      size: getHeight(25),
-                                    ),
-                                  ),
-                                ),
+                                child: EmailField(
+                                    emailController: emailController),
                               ),
                               SizedBox(
                                 height: getHeight(10),
@@ -210,39 +175,13 @@ class _LoginWidgetState extends State<LoginWidget> {
                                 width: getWidth(280),
                                 child: StatefulBuilder(
                                     builder: (context, setState) {
-                                  return TextFormField(
-                                    controller: passController,
-                                    cursorColor: AppColor.skGreenColor,
-                                    cursorErrorColor: AppColor.skGreenColor,
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                    textAlign: TextAlign.start,
-                                    keyboardType: TextInputType.visiblePassword,
-                                    validator: (value) =>
-                                        passwordValidator(value),
-                                    obscureText: _passVisible,
-                                    obscuringCharacter: '*',
-                                    decoration: formFieldDecoration(
-                                      hinText: 'Password',
-                                      prefixIcon: Icon(
-                                        Icons.lock,
-                                        size: getHeight(25),
-                                      ),
-                                      suffixIcon: GestureDetector(
-                                        onTap: () => setState(
-                                            () => _passVisible = !_passVisible),
-                                        child: Icon(
-                                          _passVisible
-                                              ? Icons.visibility_off
-                                              : Icons.visibility,
-                                          size: getHeight(25),
-                                          color: AppColor.skGreenColor,
-                                        ),
-                                      ),
-                                    ),
-                                  );
+                                  return PasswordField(
+                                      passController: passController,
+                                      passVisible: _passVisible,
+                                      onChange: () {
+                                        setState(
+                                            () => _passVisible = !_passVisible);
+                                      });
                                 }),
                               ),
                               SizedBox(
@@ -265,61 +204,39 @@ class _LoginWidgetState extends State<LoginWidget> {
                                 SizedBox(
                                   height: getHeight(10),
                                 ),
-                              BlocConsumer<LoginBloc, LoginState>(
+                              if (isSignUp)
+                                SizedBox(
+                                  width: getWidth(280),
+                                  child: MobileNumberField(
+                                      mobileNoController: mobileNoController),
+                                ),
+                              if (isSignUp)
+                                SizedBox(
+                                  height: getHeight(10),
+                                ),
+                              BlocConsumer<UserInfoBloc, UserInfoState>(
                                   listener: (context, state) {
                                 if (state is LoadingState) {
                                   _loading = true;
                                 }
                                 if (state is LoginUserState) {
-                                  _loading = false;
-                                  UserCredential? userCredential =
-                                      state.userCredential;
-                                  USER_CREDENTIAL = userCredential;
                                   if (mounted) {
-                                    showSnackbar(context, "Logged In Success",
-                                        Colors.green);
-                                  }
-                                  if (mounted) {
-                                    pushToDashboard(context);
+                                    _getUserInfo();
                                   }
                                 }
                                 if (state is RegisterUserState) {
-                                  _loading = false;
-                                  UserCredential? userCredential =
-                                      state.userCredential;
-                                  USER_CREDENTIAL = userCredential;
                                   if (mounted) {
-                                    showSnackbar(context, "Registered Success",
-                                        Colors.green);
-                                  }
-                                  if (mounted) {
-                                    pushToDashboard(context);
+                                    _getUserInfo();
                                   }
                                 }
                                 if (state is GoogleLoginState) {
-                                  _loading = false;
-                                  UserCredential? userCredential =
-                                      state.userCredential;
-                                  USER_CREDENTIAL = userCredential;
                                   if (mounted) {
-                                    showSnackbar(context, "Logged In Success",
-                                        Colors.green);
-                                  }
-                                  if (mounted) {
-                                    pushToDashboard(context);
+                                    _getUserInfo();
                                   }
                                 }
                                 if (state is AppleLoginState) {
-                                  _loading = false;
-                                  UserCredential? userCredential =
-                                      state.userCredential;
-                                  USER_CREDENTIAL = userCredential;
                                   if (mounted) {
-                                    showSnackbar(context, "Logged In Success",
-                                        Colors.green);
-                                  }
-                                  if (mounted) {
-                                    pushToDashboard(context);
+                                    _getUserInfo();
                                   }
                                 }
                                 if (state is LoginFailureState) {
@@ -331,6 +248,39 @@ class _LoginWidgetState extends State<LoginWidget> {
                                 }
                                 if (state is FailureLoginState) {
                                   _loading = false;
+                                }
+
+                                if (state is GetUserInfoSuccess) {
+                                  _loading = false;
+                                  print('userff ecth...');
+
+                                  if (state.model != null) {
+                                    print('state model..');
+                                    if (mounted) {
+                                      showSnackbar(context, "Logged In Success",
+                                          Colors.green);
+                                    }
+                                    if (state.model?.isAdmin ?? false) {
+                                      BlocProvider.of<UserInfoManager>(context)
+                                          .getUserData();
+                                      pushToAdmin(context);
+                                    } else {
+                                      BlocProvider.of<UserInfoManager>(context)
+                                          .getUserData();
+                                      pushToDashboard(context);
+                                    }
+                                  } else {
+                                    print('nul.... state model');
+                                    if (mounted) {
+                                      showSnackbar(
+                                          context,
+                                          "Something went wrong please try again later...",
+                                          Colors.green);
+                                    }
+                                  }
+                                }
+                                if (state is UserFailure) {
+                                  print('user faailure.....');
                                 }
                               }, builder: (context, state) {
                                 return Row(
@@ -378,6 +328,10 @@ class _LoginWidgetState extends State<LoginWidget> {
                                                         .toString()
                                                         .trim(),
                                                     userName: userNameController
+                                                        .text
+                                                        .toString()
+                                                        .trim(),
+                                                    mobileNo: mobileNoController
                                                         .text
                                                         .toString()
                                                         .trim(),
@@ -547,12 +501,11 @@ class _LoginWidgetState extends State<LoginWidget> {
                       children: [
                         GestureDetector(
                           onTap: () {
-                            if (!(hiveInstance?.getIsLoggin() ?? false)) {
-                              hiveInstance?.setIsGuest(true);
-                            }
+                            _loginBloc.add(UserLoggedOutEvent(isSkip: true));
+
                             Navigator.pushNamedAndRemoveUntil(
                               context,
-                              AppRoutes.dashboardRoute,
+                              AppRoutes.profileRoute,
                               (route) => false,
                             );
                           },
@@ -577,6 +530,10 @@ class _LoginWidgetState extends State<LoginWidget> {
                         ),
                       ],
                     ),
+
+                    SizedBox(
+                      height: getHeight(20),
+                    ),
                   ],
                 ),
               ),
@@ -585,7 +542,7 @@ class _LoginWidgetState extends State<LoginWidget> {
             //Current Page Dot Viewer
             Padding(
               padding: EdgeInsets.only(top: getHeight(5.0)),
-              child: BlocConsumer<LoginBloc, LoginState>(
+              child: BlocConsumer<UserInfoBloc, UserInfoState>(
                 listener: (context, state) {
                   if (state is LoginImageListState) {
                     imageLength = state.imagesList.length;
@@ -667,11 +624,22 @@ class _LoginWidgetState extends State<LoginWidget> {
     );
   }
 
+  void _getUserInfo() {
+    _loginBloc.add(GetUserInfoEvent());
+  }
+
   Future<Object?> pushToDashboard(BuildContext context) {
     return Navigator.pushNamedAndRemoveUntil(
       context,
       AppRoutes.dashboardRoute,
       (route) => false,
+    );
+  }
+
+  Future<Object?> pushToAdmin(BuildContext context) {
+    return Navigator.pushNamed(
+      context,
+      AppRoutes.adminDashboard,
     );
   }
 }
@@ -686,7 +654,7 @@ class LoginUpperWidget extends StatefulWidget {
 class _LoginUpperWidgetState extends State<LoginUpperWidget> {
   bool isLoading = false;
   List<CachedNetworkImage> imageUrls = [];
-  late LoginBloc _loginBloc;
+  late UserInfoBloc _loginBloc;
   late PageController _pageController;
   int _currentIndex = 0;
   Timer? _timer;
@@ -696,7 +664,7 @@ class _LoginUpperWidgetState extends State<LoginUpperWidget> {
   @override
   void initState() {
     super.initState();
-    _loginBloc = context.read<LoginBloc>();
+    _loginBloc = context.read<UserInfoBloc>();
     _loginCubit = context.read<LoginCubit>();
     _pageController = PageController(initialPage: _currentIndex);
     fetchLoginImages();
@@ -732,7 +700,7 @@ class _LoginUpperWidgetState extends State<LoginUpperWidget> {
     return Stack(
       children: [
         firstWave(),
-        BlocConsumer<LoginBloc, LoginState>(listener: (context, state) {
+        BlocConsumer<UserInfoBloc, UserInfoState>(listener: (context, state) {
           if (state is LoginImageListState) {
             setState(() {
               isLoading = false;

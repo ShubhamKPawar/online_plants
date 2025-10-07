@@ -5,22 +5,15 @@ class CartCubit extends Cubit<CartCubitBloc> {
   CartCubit()
       : super(CartCubitBloc(
           showContainer: false,
-          // showText: false, counter: 0
+          itemCount: 0,
         ));
 
   void toggleShowContainer(bool value) {
     emit(state.copyWith(showContainer: value));
   }
 
-  // void toggleShowText() {
-  //   emit(state.copyWith(showText: !state.showText));
-  // }
-
-  // void incrementCounter() {
-  //   emit(state.copyWith(counter: state.counter + 1));
-  // }
-
-  // void decrementCounter() {
-  //   emit(state.copyWith(counter: state.counter - 1));
-  // }
+  void addToCart() {
+    int count = state.itemCount + 1;
+    emit(state.copyWith(itemCount: count));
+  }
 }

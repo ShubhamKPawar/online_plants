@@ -43,10 +43,6 @@ class _SplashScreenState extends State<SplashScreen> {
     Timer(const Duration(seconds: 3), () {
       if (kDebugMode) {
         print("FIREBASE: ${FirebaseAuth.instance.currentUser}");
-
-        print("HIVE: ${hiveInstance?.getIsLoggin()}");
-        print(
-            '${(hiveInstance?.getIsLoggin() ?? false) || (hiveInstance?.getIsGuest() ?? false)}');
       }
 
       Navigator.pushNamedAndRemoveUntil(

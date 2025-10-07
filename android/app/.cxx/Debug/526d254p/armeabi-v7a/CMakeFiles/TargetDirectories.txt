@@ -1,0 +1,2 @@
+C:/Users/Byte Sigma/Desktop/online_plants_app/android/app/.cxx/Debug/526d254p/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/Users/Byte Sigma/Desktop/online_plants_app/android/app/.cxx/Debug/526d254p/armeabi-v7a/CMakeFiles/rebuild_cache.dir

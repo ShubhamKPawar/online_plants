@@ -61,3 +61,31 @@ String? usernameValidator(String? value) {
 
   return null; // Valid username
 }
+
+String? mobileNumberValidator(String? value) {
+  if (value == null || value.isEmpty) {
+    return 'Mobile number is required';
+  }
+
+  // Check if it contains only digits
+  if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
+    return 'Mobile number must contain only digits';
+  }
+
+  // Check length: Must be exactly 10 digits
+  if (value.length != 10) {
+    return 'Mobile number must be exactly 10 digits long';
+  }
+
+  // Prevent numbers starting with 0
+  if (value.startsWith('0')) {
+    return 'Mobile number cannot start with 0';
+  }
+
+  // Enforce valid starting digits (optional, based on country)
+  if (!RegExp(r'^[6-9][0-9]{9}$').hasMatch(value)) {
+    return 'Invalid mobile number format';
+  }
+
+  return null;
+}

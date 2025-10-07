@@ -1,19 +1,26 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:online_plants_app/main.dart';
 
 void showSnackbar(BuildContext context, String message, Color color) {
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-      content: Text(
-        textAlign: TextAlign.center,
-        message,
-        style: const TextStyle(color: Colors.white),
-      ),
-      backgroundColor: color,
-      duration: const Duration(seconds: 2),
-      behavior: SnackBarBehavior.floating,
-    ),
-  );
+  // scaffoldMessengerKey.currentState?.showSnackBar(
+  //   SnackBar(
+  //     content: Text(
+  //       message,
+  //       textAlign: TextAlign.center,
+  //       style: const TextStyle(color: Colors.white),
+  //     ),
+  //     backgroundColor: color,
+  //     margin: EdgeInsets.only(
+  //       bottom: MediaQuery.of(context).size.height - 100, // Adjust as needed
+  //       left: 20,
+  //       right: 20,
+  //     ),
+  //     behavior: SnackBarBehavior.floating,
+  //     duration: const Duration(seconds: 2),
+  //   ),
+  // );
+  print('snakbar...$message');
 }
 
 class InAppLoaderWidget extends StatelessWidget {

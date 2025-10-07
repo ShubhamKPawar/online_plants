@@ -1,6 +1,6 @@
 import 'package:online_plants_app/features/profile/data/model/user_address_model.dart';
 
-class UserProfile {
+class UserProfileModel {
   final int? userId;
   final String name;
   final String? email;
@@ -9,7 +9,7 @@ class UserProfile {
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
-  UserProfile({
+  UserProfileModel({
     this.userId,
     required this.name,
     this.email,
@@ -19,11 +19,11 @@ class UserProfile {
     this.updatedAt,
   });
 
-  factory UserProfile.fromJson(Map<String, dynamic> json) {
+  factory UserProfileModel.fromJson(Map<String, dynamic> json) {
     var address = json['address'] as List;
     List<Address>? addressList =
         address.map((i) => Address.fromJson(i)).toList();
-    return UserProfile(
+    return UserProfileModel(
       userId: json['userId'],
       name: json['name'],
       email: json['email'],

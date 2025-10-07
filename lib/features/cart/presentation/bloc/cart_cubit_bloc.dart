@@ -1,24 +1,20 @@
 class CartCubitBloc {
   final bool showContainer;
-  // final bool showText;
-  // final int counter;
+  final int itemCount;
 
   CartCubitBloc({
     required this.showContainer,
-    // required this.showText,
-    // required this.counter,
+    required this.itemCount,
   });
 
   // Copy constructor to facilitate state updates
   CartCubitBloc copyWith({
     bool? showContainer,
-    // bool? showText,
-    // int? counter,
+    int? itemCount,
   }) {
     return CartCubitBloc(
       showContainer: showContainer ?? this.showContainer,
-      // showText: showText ?? this.showText,
-      // counter: counter ?? this.counter,
+      itemCount: itemCount ?? this.itemCount,
     );
   }
 }

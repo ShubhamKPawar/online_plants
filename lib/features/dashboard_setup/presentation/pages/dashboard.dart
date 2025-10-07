@@ -2,6 +2,9 @@ import 'package:animated_notch_bottom_bar/animated_notch_bottom_bar/animated_not
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:online_plants_app/core/constants/constant.dart';
+import 'package:online_plants_app/core/constants/dimensions.dart';
+import 'package:online_plants_app/core/services_data/user_info_bloc/user_info_bloc.dart';
+import 'package:online_plants_app/core/services_data/user_info_bloc/user_info_event.dart';
 import 'package:online_plants_app/core/utils/app_color.dart';
 import 'package:online_plants_app/core/utils/size.dart';
 import 'package:online_plants_app/features/dashboard_setup/presentation/bloc/bottom_navigation_bloc.dart';
@@ -11,7 +14,7 @@ import 'package:online_plants_app/features/cart/presentation/pages/cart.dart';
 import 'package:online_plants_app/features/home/presentation/pages/home.dart';
 import 'package:online_plants_app/features/profile/presentation/pages/profile.dart';
 import 'package:online_plants_app/features/search/presentation/pages/search.dart';
-import 'package:online_plants_app/features/timeline/presentation/pages/timeline.dart';
+import 'package:online_plants_app/features/timeline/presentation/pages/lateset_timeline.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
@@ -24,15 +27,23 @@ class _DashboardState extends State<Dashboard> {
   final NotchBottomBarController _controller =
       NotchBottomBarController(index: 0);
   late BottomNavigationBloc bloc;
+  late UserInfoBloc _userInfoBloc;
 
   @override
   void initState() {
+    super.initState();
     bloc = context.read<BottomNavigationBloc>();
     _controller.addListener(() {
       final int index = _controller.index;
       bloc.add(BottomNavigationTabChanged(index));
     });
-    super.initState();
+    _userInfoBloc = context.read<UserInfoBloc>();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _userInfoBloc.add(GetUserInfoEvent());
   }
 
   int tabIndex = 0;
@@ -50,6 +61,13 @@ class _DashboardState extends State<Dashboard> {
                     tabIndex = state.tabIndex;
                   }
                 }
+
+                if (state is BottomNavigationPageChangeState) {
+                  if (mounted) {
+                    tabIndex = state.tabIndex;
+                    _controller.jumpTo(state.tabIndex);
+                  }
+                }
               },
               builder: (context, state) {
                 return IndexedStack(
@@ -58,7 +76,7 @@ class _DashboardState extends State<Dashboard> {
                     Home(),
                     Cart(),
                     Search(),
-                    Timeline(),
+                    LatestTimeline(),
                     Profile(),
                   ],
                 );
@@ -69,86 +87,103 @@ class _DashboardState extends State<Dashboard> {
             bottom: 0,
             child: AnimatedNotchBottomBar(
               notchBottomBarController: _controller,
-              color: isDark ? AppColor.skBlack : AppColor.skWhite,
-              showLabel: true,
+              color: Constants.isDark ? AppColor.skBlack : AppColor.skWhite,
+              showLabel: false,
               textOverflow: TextOverflow.visible,
               maxLine: 1,
-              shadowElevation: 8,
-              kBottomRadius: getHeight(24),
+              shadowElevation: Dimens.kBottomBarShadowElevation,
+              kBottomRadius: getHeight(Dimens.kBottomBarRadius),
               notchColor: AppColor.skGreen,
               removeMargins: false,
               bottomBarWidth: MediaQuery.of(context).size.width,
               showShadow: true,
-              durationInMilliSeconds: 300,
-              itemLabelStyle: TextStyle(
-                fontSize: getHeight(12),
-              ),
-              elevation: 2,
-              bottomBarItems: const [
+              durationInMilliSeconds: Dimens.kBottomBarDurationInMilliSeconds,
+              itemLabelStyle: Theme.of(context)
+                  .textTheme
+                  .bodySmall
+                  ?.copyWith(color: AppColor.skGreenColor),
+              elevation: Dimens.kBottomBarElevation,
+              bottomBarItems: [
                 BottomBarItem(
                   inActiveItem: Icon(
                     Icons.home_filled,
-                    color: AppColor.skGrey,
+                    color: AppColor.skGreenColor,
                   ),
                   activeItem: Icon(
                     Icons.home_filled,
                     color: AppColor.skWhite,
                   ),
-                  itemLabel: 'Home',
+                  itemLabelWidget: _labelText('Home'),
                 ),
                 BottomBarItem(
                   inActiveItem: Icon(
                     Icons.shopping_cart,
-                    color: AppColor.skGrey,
+                    color: AppColor.skGreenColor,
                   ),
                   activeItem: Icon(
                     Icons.shopping_cart,
                     color: AppColor.skWhite,
                   ),
-                  itemLabel: 'Cart',
+                  itemLabelWidget: _labelText('Cart'),
                 ),
                 BottomBarItem(
                   inActiveItem: Icon(
                     Icons.search,
-                    color: AppColor.skGrey,
+                    color: AppColor.skGreenColor,
                   ),
                   activeItem: Icon(
                     Icons.search,
                     color: AppColor.skWhite,
                   ),
-                  itemLabel: 'Search',
+                  itemLabelWidget: _labelText('Search'),
                 ),
                 BottomBarItem(
                   inActiveItem: Icon(
                     Icons.timeline,
-                    color: AppColor.skGrey,
+                    color: AppColor.skGreenColor,
                   ),
                   activeItem: Icon(
                     Icons.timeline,
                     color: AppColor.skWhite,
                   ),
-                  itemLabel: 'Timeline',
+                  itemLabelWidget: _labelText('Timeline'),
                 ),
                 BottomBarItem(
                   inActiveItem: Icon(
                     Icons.person,
-                    color: AppColor.skGrey,
+                    color: AppColor.skGreenColor,
                   ),
                   activeItem: Icon(
                     Icons.person,
                     color: AppColor.skWhite,
                   ),
-                  itemLabel: 'Profile',
+                  itemLabelWidget: _labelText('Profile'),
                 ),
               ],
               onTap: (index) {
                 _controller.index = index;
                 bloc.add(BottomNavigationTabChanged(index));
               },
-              kIconSize: getHeight(15),
+              kIconSize: getHeight(Dimens.kBottomBarIconSize),
             ),
           ),
         ]),
+      ),
+    );
+  }
+
+  Widget _labelText(String text) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 8.0),
+      child: Center(
+        child: Text(
+          text,
+          textAlign: TextAlign.center,
+          style: Theme.of(context)
+              .textTheme
+              .bodySmall
+              ?.copyWith(color: AppColor.skGreenColor),
+        ),
       ),
     );
   }

@@ -1,12 +1,21 @@
 // ignore_for_file: non_constant_identifier_names
 
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:online_plants_app/core/hive_data/hive_pref.dart';
+abstract class Constants {
+  const Constants._();
 
-double WIDTH = 0.0;
-double HEIGHT = 0.0;
-bool ISLANDSCAPE = false;
-HivePreference? hiveInstance;
-UserCredential? USER_CREDENTIAL;
+  // Appstores
+  static const appstoreAppId = "";
+  static const playstoreAppId = "";
 
-bool isDark = false;
+  static String appUniqueId = '';
+
+  // Keys
+  static const apiKey = "";
+
+  static bool DRAWER = false;
+  static bool isDark = false;
+  static int dataCount = 10;
+  static int playerDataCount = 100;
+
+  static const goreshwarId = "digu_56";
+}

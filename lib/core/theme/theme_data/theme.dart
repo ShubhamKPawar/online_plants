@@ -1,9 +1,8 @@
 import "package:flutter/material.dart";
+import "package:online_plants_app/core/theme/theme_data/app_text_styles.dart";
 
 class MaterialTheme {
-  final TextTheme textTheme;
-
-  const MaterialTheme(this.textTheme);
+  const MaterialTheme();
 
   static ColorScheme lightScheme() {
     return const ColorScheme(
@@ -25,7 +24,7 @@ class MaterialTheme {
       onError: Color(0xffffffff),
       errorContainer: Color(0xffffdad6),
       onErrorContainer: Color(0xff410002),
-      surface: Color(0xfff9faef),
+      surface: Color(0xffffffff), //Color(0xfff9faef),
       onSurface: Color(0xff1a1c16),
       onSurfaceVariant: Color(0xff44483d),
       outline: Color(0xff75796c),
@@ -340,11 +339,38 @@ class MaterialTheme {
         brightness: colorScheme.brightness,
         colorScheme: colorScheme,
         fontFamily: 'Barlow',
-        textTheme: textTheme.apply(
-          bodyColor: colorScheme.onSurface,
-          displayColor: colorScheme.onSurface,
+        textTheme: TextTheme(
+          displayLarge:
+              AppTextStyles.displayLarge(textColor: colorScheme.onSurface),
+          displayMedium:
+              AppTextStyles.displayMedium(textColor: colorScheme.onSurface),
+          displaySmall:
+              AppTextStyles.displaySmall(textColor: colorScheme.onSurface),
+          bodyLarge: AppTextStyles.bodyLarge(textColor: colorScheme.onSurface),
+          bodyMedium:
+              AppTextStyles.bodyMedium(textColor: colorScheme.onSurface),
+          labelSmall:
+              AppTextStyles.labelSmall(textColor: colorScheme.onSurface),
+          titleMedium:
+              AppTextStyles.titleMedium(textColor: colorScheme.onSurface),
+          headlineLarge:
+              AppTextStyles.headlineLarge(textColor: colorScheme.onSurface),
+          headlineMedium:
+              AppTextStyles.headlineMedium(textColor: colorScheme.onSurface),
+          headlineSmall:
+              AppTextStyles.headlineSmall(textColor: colorScheme.onSurface),
+          titleLarge:
+              AppTextStyles.titleLarge(textColor: colorScheme.onSurface),
+          titleSmall:
+              AppTextStyles.titleSmall(textColor: colorScheme.onSurface),
+          bodySmall: AppTextStyles.bodySmall(textColor: colorScheme.onSurface),
+          labelLarge:
+              AppTextStyles.labelLarge(textColor: colorScheme.onSurface),
+          labelMedium:
+              AppTextStyles.labelMedium(textColor: colorScheme.onSurface),
         ),
         scaffoldBackgroundColor: colorScheme.surface,
+        appBarTheme: AppBarTheme(backgroundColor: colorScheme.surface),
         canvasColor: colorScheme.surface,
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
