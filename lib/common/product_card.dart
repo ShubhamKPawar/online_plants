@@ -39,7 +39,7 @@ class _ProductCardState extends State<ProductCard> {
         borderRadius: BorderRadius.circular(getHeight(15)),
       ),
       child: SizedBox(
-        height: getHeight(190),
+        height: getHeight(202),
         child: Stack(
           children: [
             Column(

@@ -128,7 +128,7 @@ class _PlantsListingHorizontalState extends State<PlantsListingHorizontal> {
         Align(
           alignment: Alignment.centerLeft,
           child: SizedBox(
-            height: getHeight(200),
+            height: getHeight(208),
             width: double.infinity,
             child: CarouselView(
                 itemSnapping: true,

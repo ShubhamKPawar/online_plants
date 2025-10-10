@@ -1,0 +1,20 @@
+{
+  "buildFiles": [
+    "C:\\Users\\Byte Sigma\\fvm\\versions\\3.27.0\\packages\\flutter_tools\\gradle\\src\\main\\groovy\\CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "C:\\Users\\Byte Sigma\\AppData\\Local\\Android\\sdk\\cmake\\3.22.1\\bin\\ninja.exe",
+      "-C",
+      "C:\\Users\\Byte Sigma\\Desktop\\flutter-woocommerce-app\\online_plants_app\\android\\app\\.cxx\\Debug\\111x6245\\x86",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "C:\\Users\\Byte Sigma\\AppData\\Local\\Android\\sdk\\cmake\\3.22.1\\bin\\ninja.exe",
+    "-C",
+    "C:\\Users\\Byte Sigma\\Desktop\\flutter-woocommerce-app\\online_plants_app\\android\\app\\.cxx\\Debug\\111x6245\\x86",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {}
+}

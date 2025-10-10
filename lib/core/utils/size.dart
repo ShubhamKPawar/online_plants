@@ -1,21 +1,37 @@
 import 'package:online_plants_app/core/utils/size_config.dart';
 
 double getHeight(double height) {
+  final double defaultLandscapeHeight = 392;
+  final double defaultPortraitHeight = 803;
   if (!SizeConfig.isLandscape) {
-    double result = height / 803;
+    double deviceHeight = SizeConfig.devideHeigth <= defaultPortraitHeight
+        ? defaultPortraitHeight
+        : SizeConfig.devideHeigth;
+    double result = height / deviceHeight;
     return SizeConfig.devideHeigth * result;
   } else {
-    double result = height / 392;
+    double deviceHeight = SizeConfig.devideHeigth <= defaultLandscapeHeight
+        ? defaultLandscapeHeight
+        : SizeConfig.devideHeigth;
+    double result = height / deviceHeight;
     return SizeConfig.devideHeigth * result;
   }
 }
 
 double getWidth(double width) {
+  final double defaultLandscapeWidth = 774;
+  final double defaultPortraitWidth = 392;
   if (!SizeConfig.isLandscape) {
-    double result = width / 392;
+    double deviceWidth = SizeConfig.deviceWidth <= defaultPortraitWidth
+        ? defaultPortraitWidth
+        : SizeConfig.deviceWidth;
+    double result = width / deviceWidth;
     return SizeConfig.deviceWidth * result;
   } else {
-    double result = width / 774;
+    double deviceWidth = SizeConfig.deviceWidth <= defaultLandscapeWidth
+        ? defaultLandscapeWidth
+        : SizeConfig.deviceWidth;
+    double result = width / deviceWidth;
     return SizeConfig.deviceWidth * result;
   }
 }
